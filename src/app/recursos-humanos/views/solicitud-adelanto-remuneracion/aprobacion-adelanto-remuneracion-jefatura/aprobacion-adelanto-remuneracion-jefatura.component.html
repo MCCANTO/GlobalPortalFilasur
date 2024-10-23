@@ -1,0 +1,64 @@
+<div class="container">
+
+    <mat-dialog-content class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <mat-card class="color">
+                    <mat-card-header class="titulo">
+                        <mat-card-title style="font-size: medium;">
+                           <strong>Solicitud de adelanto de sueldo N°: 000{{data.request.id_adelanto_sueldo}}</strong>
+                        </mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <mat-card class="color">
+                                    <mat-card-header class="titulo">
+                                        <mat-card-title style="font-size: medium;">Detalle</mat-card-title>
+                                    </mat-card-header>
+                                    <mat-card-content>
+                                        <p><strong>Monto:</strong> {{ data.request.monto }}</p>
+                                        <p><strong>Estado conformidad empleado:</strong> {{ getEstado(data.request.confirmacion_trabajador) }}</p>
+                                        <p><strong>Estado aprobacion Jefatura:</strong> {{ getEstado(data.request.confirmacion_bs) }}</p>
+                                        <p><strong>Estado aprobacion Gerencia:</strong> {{ getEstado(data.request.confirmacion_gerente_rh) }}</p>
+                                        <p><strong>Fecha:</strong>  {{formatDate(data.request.fecha_solicitud)}}</p>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                        </div>
+                        <br>
+
+                        <!-- Campo para ingresar motivo de rechazo -->
+                        <div class="col-md-12">
+                            <mat-form-field appearance="fill" class="full-width motivo-rechazo-field">
+                                <mat-label>Motivo de rechazo</mat-label>
+                                <textarea matInput [(ngModel)]="motivo_rechazo_bs" [disabled]="!isApprovalComplete()">
+                                    
+                                </textarea>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="row responsive-buttons">
+                            <div class="col-md-6">
+                                <button mat-stroked-button color="primary" (click)="onApprove()" [disabled]="!isApprovalComplete()">
+                                    Aprobar solicitud
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button mat-stroked-button color="primary" (click)="onDeny()" [disabled]="!isApprovalComplete()">
+                                    Denegar solicitud
+                                </button>
+                            </div>
+                        </div>
+                       
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-stroked-button mat-dialog-close>Salir</button>
+    </mat-dialog-actions>
+
+</div>

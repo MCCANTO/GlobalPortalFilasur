@@ -1,0 +1,17 @@
+.snackbar-success {
+    background-color: #4caf50; /* Color de fondo verde */
+    color: #ffffff; /* Color de texto blanco */
+    display: flex;
+    align-items: center;
+  }
+  
+  .snackbar-success .mat-simple-snackbar-action {
+    color: #ffffff;
+  }
+
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px; /* Ajusta el tamaño según necesites */
+  }

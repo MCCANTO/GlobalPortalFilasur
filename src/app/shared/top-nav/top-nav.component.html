@@ -1,0 +1,19 @@
+<mat-toolbar class="color-inkacrops fix-nav">
+  <button type="button" mat-icon-button (click)="toggleSidebar()">
+    <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+  </button>
+  <span class="spacer"></span>
+  <div class="user-info" *ngIf="user">
+    <button mat-button [matMenuTriggerFor]="userMenu">
+      <img [src]="user.photoUrl" alt="User Photo" class="user-photo">
+    </button>
+    <mat-menu #userMenu="matMenu" class="user-menu">
+      <app-user-profile 
+        [user]="userProfile" 
+        (profileClick)="goToProfile()" 
+        (ChangePasswordClick)="goToChangePassword()" 
+        (logoutClick)="logout()">
+      </app-user-profile>
+    </mat-menu>
+  </div>
+</mat-toolbar>

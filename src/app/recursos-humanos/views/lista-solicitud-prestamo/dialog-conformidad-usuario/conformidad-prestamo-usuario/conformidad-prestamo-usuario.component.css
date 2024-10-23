@@ -1,0 +1,61 @@
+.container{
+  --bs-gutter-x: 0.5rem;
+}
+
+.row>*{
+  padding-right: calc(var(--bs-gutter-x)* 0);
+    padding-left: calc(var(--bs-gutter-x)* 0);
+}
+
+.table-container {
+    max-height: 300px; /* ajusta la altura máxima según tu preferencia */
+    overflow-y: auto;
+  }
+
+.titulo {
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding: 1px 20px 0px;
+    background-color: rgb(183, 221, 189 );
+}
+.color {
+  /*background-color: #F0F0F0;*/
+  border: 2px solid #dee3e3;
+}
+
+/* Styles for responsive dialog */
+@media (max-width: 767px) {
+  /* Adjusting table overflow for small screens */
+  .responsive-table-container {
+    overflow-x: auto;
+  }
+
+  /* Buttons layout for small screens */
+  .responsive-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  /* Buttons layout for larger screens */
+  .responsive-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+/* Define un ancho completo para dispositivos móviles */
+@media screen and (max-width: 600px) {
+  .mobile-full-width {
+    width: 100% !important;
+  }
+
+  .mat-dialog-container {
+    padding: 0 10px; /* Agregar algo de padding para que no esté pegado al borde */
+  }
+}

@@ -1,0 +1,38 @@
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+
+<div *ngIf="isLoginRoute; else mainContent">
+  <router-outlet></router-outlet>
+</div>
+
+<ng-template #mainContent>
+  <div *ngIf="!isNotFoundRoute; else notFoundContent">
+    <div class="layout-container font-regular" mat-app-background>
+      <app-top-nav (sideNavToggled)="onToolbarMenuToggle()"></app-top-nav>
+      <mat-sidenav-container class="sidenav-container" [style.marginTop.px]="toolBarHeight" [hasBackdrop]="hasBackdrop">
+        <mat-sidenav #snav 
+                     position="start" 
+                     [mode]="sideNavMode" 
+                     [opened]="sideNavDefaultOpened"
+                     (backdropClick)="closeSidebar()"
+                     class="sidenav mat-elevation-z10"
+                     [ngStyle]="{'width.px': isExpanded ? openedWidth : closedWidth}">
+          <!-- Mostrar app-side-nav solo si no es móvil o si está expandido -->
+          <app-side-nav *ngIf="!isMobile || isExpanded" (closeMenu)="closeSidebar()"></app-side-nav>
+          <ng-template #elseBlock>
+            <app-side-nav-closed *ngIf="!isMobile && !isExpanded"></app-side-nav-closed>
+          </ng-template>
+        </mat-sidenav>
+        <mat-sidenav-content role="region" id="sidenav-content"
+                             [ngStyle]="{'margin-left.px': (isExpanded && !isMobile) ? openedWidth : 0}">
+          <main class="main-container">
+            <router-outlet></router-outlet>
+          </main>
+        </mat-sidenav-content>
+      </mat-sidenav-container>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #notFoundContent>
+  <router-outlet></router-outlet>
+</ng-template>

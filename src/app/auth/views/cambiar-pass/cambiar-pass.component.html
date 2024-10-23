@@ -1,0 +1,29 @@
+<form [formGroup]="changePasswordForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="currentPassword">Contraseña Actual:</label>
+      <input id="currentPassword" type="password" formControlName="currentPassword">
+      <div *ngIf="changePasswordForm.get('currentPassword')?.invalid && changePasswordForm.get('currentPassword')?.touched">
+        <small class="error">La contraseña actual es requerida.</small>
+      </div>
+    </div>
+  
+    <div>
+      <label for="newPassword">Nueva Contraseña:</label>
+      <input id="newPassword" type="password" formControlName="newPassword">
+      <div *ngIf="changePasswordForm.get('newPassword')?.invalid && changePasswordForm.get('newPassword')?.touched">
+        <small class="error" *ngIf="changePasswordForm.get('newPassword')?.errors?.['required']">La nueva contraseña es requerida.</small>
+        <small class="error" *ngIf="changePasswordForm.get('newPassword')?.errors?.['minlength']">La nueva contraseña debe tener al menos 8 caracteres.</small>
+      </div>
+    </div>
+  
+    <div>
+      <label for="confirmPassword">Confirmar Nueva Contraseña:</label>
+      <input id="confirmPassword" type="password" formControlName="confirmPassword">
+      <div *ngIf="changePasswordForm.get('confirmPassword')?.invalid && changePasswordForm.get('confirmPassword')?.touched">
+        <small class="error" *ngIf="changePasswordForm.errors?.['mismatch']">Las contraseñas no coinciden.</small>
+      </div>
+    </div>
+  
+    <button type="submit" [disabled]="changePasswordForm.invalid">Cambiar Contraseña</button>
+  </form>
+  

@@ -1,0 +1,4 @@
+<div class="snackbar-container" [ngStyle]="{'background-color': data.backgroundColor, 'color': data.textColor}">
+    {{ data.message }}
+    <button mat-button (click)="dismiss()">{{ data.buttonText || 'OK' }}</button>
+</div>

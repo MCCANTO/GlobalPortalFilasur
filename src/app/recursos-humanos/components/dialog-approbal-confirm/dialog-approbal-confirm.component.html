@@ -1,0 +1,16 @@
+<div *ngIf="!loading">
+  <h1 mat-dialog-title>Confirmación</h1>
+    <div mat-dialog-content>
+      <p>¿Está seguro de que desea aprobar la solicitud de préstamo?</p>
+    </div>
+    <div mat-dialog-actions>
+      <button mat-button color="primary" (click)="onConfirm()">Sí</button>
+      <button mat-button (click)="onCancel()">No</button>  
+    </div>
+</div>
+
+
+<!-- Si está cargando, mostramos solo el spinner -->
+<div *ngIf="loading" class="spinner-container">
+  <mat-spinner diameter="40"></mat-spinner>
+</div>

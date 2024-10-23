@@ -1,0 +1,135 @@
+
+
+form {
+    text-align: left;
+    max-width: 500px;
+    margin: auto;
+}
+
+h1 {
+    color: red;
+    text-align: center;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+button {
+    display: block;
+    margin: 20px auto;
+}
+
+mat-checkbox {
+    margin: 20px 0;
+}
+
+.content {
+    text-align: center;
+}
+
+.buttons {
+    margin: 20px 0;
+}
+
+mat-card.advisor-card {
+    display: inline-block;
+    text-align: center;
+}
+
+mat-card img {
+    width: 100px;
+    height: auto;
+}
+
+
+.descuentos {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .descuento-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .descuento-col {
+    flex: 1;
+    margin-right: 10px;
+  }
+
+  .descuento-col:last-child {
+    margin-right: 0;
+  }
+
+  .progress-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  /***ESTILOS PARA COLUMNA TOTALES***/
+  .descuento-col {
+    flex: 1;
+    margin-right: 8px;
+    min-width: 100px;
+  }
+  
+  .descuento-row {
+    display: flex;
+    margin-bottom: 16px;
+  }
+
+
+  /*ESTILOS TABLA*/
+
+  .descuento-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap; /* Evita que las columnas se envuelvan */
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .descuento-col.mes {
+    flex: 2; /* Incrementa el espacio que ocupa la columna 'Mes' */
+    max-width: 30%; /* Aumenta el ancho máximo de la columna 'Mes' */
+  }
+
+  .descuento-col.monto {
+    flex: 1; /* Reduce el espacio que ocupa la columna 'Monto' */
+    max-width: 5%; /* Disminuye el ancho máximo de la columna 'Monto' */
+  }
+  
+  .descuento-col {
+    flex: 0.7; /* Asegura que cada columna tome espacio equitativamente */
+    min-width: 80px; /* Asegura que las columnas no sean demasiado estrechas */
+    max-width: 25%; /* Limita el ancho máximo para que las cuatro columnas sean visibles */
+  }
+  
+  .table-container {
+    overflow-x: auto; /* Habilita el desplazamiento horizontal en pantallas pequeñas */
+  }
+  
+  .mat-form-field {
+    width: 100%; /* Asegura que los inputs ocupen todo el espacio de la columna */
+  }
+  
+  .mat-input-element {
+    text-align: center; /* Alinea el texto dentro de los inputs */
+  }
+  
+  @media (max-width: 600px) {
+    .descuento-col {
+      min-width: 80px; /* Ajusta el ancho mínimo en pantallas pequeñas */
+      max-width: 25%; /* Mantiene las columnas visibles */
+    }
+
+    @media (max-width: 480px) {
+      .mat-label {
+        font-size: 0.75rem; /* Ajusta el tamaño en pantallas pequeñas */
+      }
+    }
+  }

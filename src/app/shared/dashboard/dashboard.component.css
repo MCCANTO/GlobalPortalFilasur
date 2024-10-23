@@ -1,0 +1,33 @@
+.mb10 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.mt20 {
+    margin-top: 20px;
+}
+
+.mat-card {
+    height: 100%;
+}
+
+/* Mantén la misma proporción para todas las imágenes */
+.mat-card-image {
+    width: 100%;
+    aspect-ratio: 16/9; /* Proporción deseada (ancho/alto) */
+    object-fit: cover; /* Escala la imagen para que ocupe todo el espacio disponible, manteniendo la relación de aspecto */
+}
+
+.welcome-card {
+    max-width: 100%;   /* El card se ajusta al ancho máximo del contenedor */
+    margin: 0 auto;    /* Centra el card */
+    text-align: center;
+    overflow: hidden;  /* Evita cualquier overflow que cause scroll innecesario */
+  }
+
+  .welcome-image {
+    width: 100%;        /* La imagen ocupa todo el ancho del card */
+    height: auto;       /* Mantiene la proporción de la imagen */
+    max-height: 300px;  /* Limita la altura máxima para evitar que sea muy alta */
+    object-fit: cover;  /* Recorta la imagen si es necesario, pero mantiene el aspecto */
+  }

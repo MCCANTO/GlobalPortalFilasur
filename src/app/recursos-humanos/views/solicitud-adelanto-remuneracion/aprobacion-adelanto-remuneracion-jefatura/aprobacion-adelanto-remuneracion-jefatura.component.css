@@ -1,0 +1,57 @@
+.container{
+  --bs-gutter-x: 0.5rem;
+} 
+
+.row>*{
+  padding-right: calc(var(--bs-gutter-x)* 0);
+    padding-left: calc(var(--bs-gutter-x)* 0);
+}
+
+
+.table-container {
+    max-height: 300px; /* ajusta la altura máxima según tu preferencia */
+    overflow-y: auto;
+  }
+
+.titulo {
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding: 1px 20px 0px;
+    background-color: rgb(183, 221, 189 );
+}
+
+.color {
+  /*background-color: #F0F0F0;*/
+  border: 2px solid #dee3e3;
+}
+
+.mat-dialog-content, .mat-dialog-actions, .mat-card, .mat-card-content, .mat-card-header, .mat-card-title, .responsive-table-container {
+  cursor: default;
+}
+
+/* Styles for responsive dialog */
+@media (max-width: 767px) {
+  /* Adjusting table overflow for small screens */
+  .responsive-table-container {
+    overflow-x: auto;
+  }
+
+  /* Buttons layout for small screens */
+  .responsive-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Ajusta el contenedor del campo de entrada */
+.motivo-rechazo-field {
+  display: block;
+  margin-top: 10px; /* Ajuste opcional para el espaciado superior */
+}

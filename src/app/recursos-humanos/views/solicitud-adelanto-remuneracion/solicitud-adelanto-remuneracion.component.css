@@ -1,0 +1,69 @@
+form {
+    text-align: left;
+    max-width: 500px;
+    margin: auto;
+}
+
+h1 {
+    color: red;
+    text-align: center;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+button {
+    display: block;
+    margin: 20px auto;
+}
+
+mat-checkbox {
+    margin: 20px 0;
+}
+
+.content {
+    text-align: center;
+}
+
+.buttons {
+    margin: 20px 0;
+}
+
+mat-card.advisor-card {
+    display: inline-block;
+    text-align: center;
+}
+
+mat-card img {
+    width: 100px;
+    height: auto;
+}
+
+
+.descuentos {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .descuento-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .descuento-col {
+    flex: 1;
+    margin-right: 10px;
+  }
+
+  .descuento-col:last-child {
+    margin-right: 0;
+  }
+
+  .progress-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }

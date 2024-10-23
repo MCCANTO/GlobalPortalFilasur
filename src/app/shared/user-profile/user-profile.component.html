@@ -1,0 +1,24 @@
+<!-- user-profile.component.html -->
+<div class="user-profile">
+    <img [src]="user.photoUrl" alt="User Photo" class="user-photo">
+    <div class="user-details">
+      <div class="user-name">{{ user.name }}</div>
+      <div class="user-role">{{ user.role }}</div>
+      <div class="user-email">{{ user.email }}</div>
+    </div>
+    <div class="menu-items">
+      <button mat-menu-item (click)="goToProfile()">
+        <mat-icon>person</mat-icon>
+        <span>Mi Perfil</span>
+      </button>
+      <button mat-menu-item (click)="goToChangePassword()">
+        <mat-icon>password</mat-icon>
+        <span>Cambiar contraseña</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Cerrar Sesión</span>
+      </button>
+    </div>
+  </div>
+  

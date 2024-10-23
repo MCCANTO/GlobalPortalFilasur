@@ -1,0 +1,114 @@
+<div class="container">
+  <div class="shadow m-3 p-3">
+    <form class="form" [formGroup]="form" (ngSubmit)="submitForm()">
+      <h1>Resetear Contraseña</h1>
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-form-field>
+            <mat-label>Antigua Contraseña</mat-label>
+            <input [type]="hidePassword.oldPassword ? 'password' : 'text'" matInput formControlName="oldPassword"
+              placeholder="Ingresar contraseña antigua">
+            <button mat-icon-button matSuffix (click)="hidePassword.oldPassword = !hidePassword.oldPassword" [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hidePassword.oldPassword">
+              <mat-icon>{{hidePassword.oldPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="form.controls['oldPassword'].hasError('required')">
+              El campo Antigua Contraseña es <strong>requerida</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field>
+            <mat-label>Nueva Contraseña</mat-label>
+            <input [type]="hidePassword.newPassword ? 'password' : 'text'" matInput formControlName="newPassword" placeholder="Enter New Password"
+              [errorStateMatcher]="matcher">
+            <button mat-icon-button matSuffix (click)="hidePassword.newPassword = !hidePassword.newPassword" [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hidePassword.newPassword">
+              <mat-icon>{{hidePassword.newPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="form.controls['newPassword'].hasError('required')">
+              El campo Nueva contraseña es <strong>requerido</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-12" *ngIf="form.controls['newPassword'].hasError('pattern')">
+          <mat-error *ngIf="form.controls['newPassword'].hasError('pattern')">
+            <span class="danger">La contraseña debe contener las siguientes condiciones.</span>
+            <ul>
+              <li
+                [ngClass]="{'text-success':checkValidations(form.controls['newPassword'],'uppercase'), 'danger': !checkValidations(form.controls['newPassword'].value,'uppercase')}">
+                Mínimo 1 letra mayúscula.</li>
+              <li
+                [ngClass]="{'text-success':checkValidations(form.controls['newPassword'],'lowercase'), 'danger': !checkValidations(form.controls['newPassword'],'lowercase')}">
+                Mínimo 1 letra minuscula.</li>
+              <li
+                [ngClass]="{'text-success':checkValidations(form.controls['newPassword'],'special-character'), 'danger': !checkValidations(form.controls['newPassword'],'special-character')}">
+                Mínimo 1 caracter especial.</li>
+              <li
+                [ngClass]="{'text-success':checkValidations(form.controls['newPassword'],'number'), 'danger': !checkValidations(form.controls['newPassword'],'number')}">
+                Mínimo 1 numero.</li>
+              <li
+                [ngClass]="{'text-success':checkValidations(form.controls['newPassword'],'length'), 'danger': !checkValidations(form.controls['newPassword'],'length')}">
+                Mínimo 8 caracteres.</li>
+              <li
+                [ngClass]="{'text-success':checkValidations(form.controls['newPassword'],'length'), 'danger': !checkValidations(form.controls['newPassword'],'length')}">
+                Máximo 16 caracteres.</li>
+            </ul>
+          </mat-error>
+        </div>
+
+        <div class="col-sm-12">
+          <mat-form-field>
+            <mat-label>Confirmar Nueva Contraseña</mat-label>
+            <input [type]="hidePassword.confirmPassword ? 'password' : 'text'" matInput formControlName="confirmNewPassword"
+              placeholder="Enter Confirm New Password" [errorStateMatcher]="matcher">
+            <button mat-icon-button matSuffix (click)="hidePassword.confirmPassword = !hidePassword.confirmPassword"
+              [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword.confirmPassword">
+              <mat-icon>{{hidePassword.confirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="form.controls['confirmNewPassword'].hasError('required')">
+              El campo confirmar contraseña es <strong>requerido</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-12" *ngIf="form.controls['confirmNewPassword'].hasError('pattern')">
+          <mat-error *ngIf="form.controls['confirmNewPassword'].hasError('pattern')">
+            <span class="danger">La contraseña debe contener las siguientes condiciones.</span>
+            <ul>
+              <li
+                [ngClass]="{'text-success':checkValidations(form.controls['confirmNewPassword'],'uppercase'), 'danger': !checkValidations(form.controls['confirmNewPassword'].value,'uppercase')}">
+                Mínimo 1 letra mayúscula.</li>
+              <li
+                [ngClass]="{'text-success':checkValidations(form.controls['confirmNewPassword'],'lowercase'), 'danger': !checkValidations(form.controls['confirmNewPassword'],'lowercase')}">
+                Mínimo 1 letra minuscula.</li>
+              <li
+                [ngClass]="{'text-success':checkValidations(form.controls['confirmNewPassword'],'special-character'), 'danger': !checkValidations(form.controls['confirmNewPassword'],'special-character')}">
+                Mínimo 1 caracter especial.</li>
+              <li
+                [ngClass]="{'text-success':checkValidations(form.controls['confirmNewPassword'],'number'), 'danger': !checkValidations(form.controls['confirmNewPassword'],'number')}">
+                Mínimo 1 numero.</li>
+              <li
+                [ngClass]="{'text-success':checkValidations(form.controls['confirmNewPassword'],'length'), 'danger': !checkValidations(form.controls['confirmNewPassword'],'length')}">
+                Mínimo 8 caracteres.</li>
+              <li
+                [ngClass]="{'text-success':checkValidations(form.controls['confirmNewPassword'],'length'), 'danger': !checkValidations(form.controls['confirmNewPassword'],'length')}">
+                Máximo 16 caracteres.</li>
+            </ul>
+          </mat-error>
+        </div>
+
+        <div class="col-sm-12" *ngIf="form.hasError('notMatched')">
+          <mat-error *ngIf="form.hasError('notMatched')">
+            <span class="danger">Las contraseñas no coinciden.</span>
+          </mat-error>
+        </div>
+        <div class="col-sm-12" style="text-align: right;">
+          <button type="submit" mat-raised-button color="primary" class="m-2" style="width: 200px;"
+            [disabled]="!form.valid">Actualizar Contraseña</button>
+          <button type="button" mat-raised-button color="warn" class="m-2" style="width: 100px;"
+            (click)="form.reset()">Resetear</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+<div class="login-container">
+    <mat-card>
+        <mat-card-title style="text-align: center;">
+            <!-- <img style="width: 90%;"
+                src="../../../../assets/images/login/logo.png"
+                alt="Login Image" class="login-image"> -->
+            <img style="width: 90%;"
+                src="../../../../gp/intranet/assets/images/login/logo-filasur.png"
+                alt="Login Image" class="login-image"> 
+        </mat-card-title>
+        <mat-card-content>
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                <mat-form-field appearance="fill">
+                    <mat-label>Usuario</mat-label>
+                    <input matInput formControlName="email" type="email" placeholder="Ingresa tu usuario">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Password</mat-label>
+                    <input matInput [type]="hide ? 'password' : 'text'" formControlName="password"
+                        placeholder="Ingresa tu contraseña">
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                        [attr.aria-pressed]="hide" type="button">
+                        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+                </mat-form-field>
+
+                <button style="width: 100%;" mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid">Login</button>
+            </form>
+            
+            <div style="display: flex; justify-content: space-between; align-items: end;">
+                <div>
+                    <a class="solicitud-user-link" routerLink="/auth-login/solicitar-acceso">Solicitar acceso</a>
+                </div>
+                <div>
+                    <a class="forgot-password-link" routerLink="/auth-login/cambiar-pass">Olvide mi contraseña</a>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

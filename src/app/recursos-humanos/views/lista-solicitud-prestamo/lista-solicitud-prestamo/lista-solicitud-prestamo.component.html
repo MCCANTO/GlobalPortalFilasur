@@ -1,0 +1,174 @@
+<div class="mat-elevation-z8">
+  <div class="prl15 pt10">
+    <div class="row" style="margin-top: 5px;">
+      <div class="col-sm-12">
+        <h3 class="mat-h3">Lista de Solicitudes Prestamos</h3>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="col-sm-12 col-lg-6 mb5">
+        <mat-form-field class="w-100">
+          <input matInput type="text" [(ngModel)]="value" placeholder="Search here..." (keyup)="applyFilter($event)">
+          <button matSuffix mat-icon-button color="primary">
+            <mat-icon class="search-icon" *ngIf="value != ''; else elseBlock" (click)="value=''">close</mat-icon>
+            <ng-template #elseBlock>
+              <mat-icon class="search-icon">search</mat-icon>
+            </ng-template>
+          </button>
+        </mat-form-field>
+      </div>
+
+      <div class="col-sm-12 col-lg-6 mb5">
+        <div style="display: flex; justify-content: space-between; align-items: end;">
+
+          <div>
+            <button mat-mini-fab color="primary" (click)="toggleForm()" matTooltip="Show/Hide columns">
+              <mat-icon>remove_red_eye</mat-icon>
+            </button>
+          </div>
+
+          <div>
+            <button mat-mini-fab color="primary" [matMenuTriggerFor]="menu1" matTooltip="More actions">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu1="matMenu">
+              <button mat-menu-item>
+                <span>Export as Excel</span>
+              </button>
+              <button mat-menu-item>
+                <span>Export as Csv</span>
+              </button>
+              <button mat-menu-item>
+                <span>Export as Json</span>
+              </button>
+              <button mat-menu-item>
+                <span>Export as Txt</span>
+              </button>
+            </mat-menu>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div [@animation] class="row mb5">
+      <div class="col-sm-6 col-lg-2" *ngFor="let item of checkBoxList">
+        <mat-checkbox (change)="hideColumn($event, item.def)" [checked]="item.hide">
+          {{ item.label }}
+        </mat-checkbox>
+      </div>
+    </div>
+
+    <div class="responsive-table">
+      <table mat-table [dataSource]="dataSource" matSort>
+
+        <!-- ID Column -->
+        <ng-container matColumnDef="id_prestamo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+          <td mat-cell *matCellDef="let request"> {{request.id_prestamo}} </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="nombre_completo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+          <td mat-cell *matCellDef="let request"> {{request.nombre_completo}} </td>
+        </ng-container>
+
+        <!-- Amount Column -->
+        <ng-container matColumnDef="area">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Area </th>
+          <td mat-cell *matCellDef="let request"> {{request.area}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="puesto">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Puesto </th>
+          <td mat-cell *matCellDef="let request"> {{request.puesto}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="monto">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Monto </th>
+          <td mat-cell *matCellDef="let request"> {{request.monto}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Motivo </th>
+          <td mat-cell *matCellDef="let request"> {{request.descripcion}} </td>
+        </ng-container>
+
+        <!-- Status Empleado -->
+        <ng-container matColumnDef="confirmacion_trabajador">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado Conformidad </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-slide-toggle
+              [checked]="element.confirmacion_trabajador === true" 
+              [disabled]="element.confirmacion_trabajador === true"
+              (change)="onConformidadChange($event, element)">
+            </mat-slide-toggle>
+          </td>
+        </ng-container>
+
+        <!-- Status Request -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado Solicitud </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-icon [ngClass]="{
+                'estado-verde': element.estado === true ,
+                'estado-rojo': element.estado === false || element.estado === null
+              }">
+              {{ element.estado === true ? 'check_circle' : 'cancel' }}
+            </mat-icon>
+          </td>
+        </ng-container>
+
+        <!-- Status BS Column -->
+        <ng-container matColumnDef="Bs">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado (CCPP) </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-icon [ngClass]="{
+                'estado-verde': element.confirmacion_bs === true,
+                'estado-rojo': element.confirmacion_bs === false || element.confirmacion_bs === null
+              }">
+              {{ element.confirmacion_bs === true ? 'check_circle' : 'cancel' }}
+            </mat-icon>
+          </td>
+        </ng-container>
+
+        <!-- Status Gerencia Column -->
+        <ng-container matColumnDef="Gerencia">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado (GER) </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-icon [ngClass]="{
+                'estado-verde': element.confirmacion_gerente_rh === true,
+                'estado-rojo': element.confirmacion_gerente_rh === false || element.confirmacion_gerente_rh === null
+              }">
+              {{ element.confirmacion_gerente_rh === true ? 'check_circle' : 'cancel' }}
+            </mat-icon>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef> Detalle </th>
+          <td mat-cell *matCellDef="let request">
+
+            <div class="icon-container">
+              <button mat-icon-button (click)="ShowDetail(request)" [ngClass]="'custom-button'"><mat-icon>visibility</mat-icon>
+              </button>
+            </div>
+
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="disColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: disColumns;" style="font-size: 12px;"></tr>
+      </table>
+
+      <mat-card *ngIf="isLoading" style="display: flex; justify-content: center; align-items: center">
+        <mat-progress-spinner color="primary" mode="indeterminate">
+        </mat-progress-spinner>
+      </mat-card>
+
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons></mat-paginator>
+
+  </div>
+</div>

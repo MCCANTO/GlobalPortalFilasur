@@ -1,0 +1,51 @@
+{
+  "name": "global-portal-filasur",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^16.0.0",
+    "@angular/cdk": "^16.2.14",
+    "@angular/common": "^16.0.0",
+    "@angular/compiler": "^16.0.0",
+    "@angular/core": "^16.0.0",
+    "@angular/forms": "^16.0.0",
+    "@angular/material": "^16.2.14",
+    "@angular/platform-browser": "^16.0.0",
+    "@angular/platform-browser-dynamic": "^16.0.0",
+    "@angular/router": "^16.0.0",
+    "@highcharts/map-collection": "^2.1.0",
+    "axios": "^1.7.2",
+    "bootstrap": "^5.3.3",
+    "highcharts": "^11.4.1",
+    "highcharts-angular": "^4.0.0",
+    "highcharts-gantt": "^0.1.7",
+    "jwt-decode": "^3.1.2",
+    "ngx-spinner": "^17.0.0",
+    "rxjs": "~7.8.0",
+    "schematics-scss-migrate": "^2.3.17",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.13.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^16.0.2",
+    "@angular/cli": "~16.0.2",
+    "@angular/compiler-cli": "^16.0.0",
+    "@types/jasmine": "~4.3.0",
+    "jasmine-core": "~4.6.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.0.0",
+    "source-map-explorer": "^2.5.3",
+    "typescript": "~5.0.2",
+    "webpack-bundle-analyzer": "^4.10.2"
+  }
+}

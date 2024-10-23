@@ -1,0 +1,14 @@
+.input-group-append button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
+  
+  .input-group-append i {
+    font-size: 1.2em;
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+  

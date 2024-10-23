@@ -1,0 +1,18 @@
+<mat-dialog-content class="estado-dialog-content">
+    <div class="estado-container">
+      <h2>ESTADO SOLICITUD DE ADELANTO DE SUELDO2322: N°000{{data.id}}</h2>
+      <div class="estado-list">
+        <div *ngFor="let item of data.estadoList" class="estado-item">
+          <div class="estado-icon">
+            <mat-icon [ngClass]="getIconClass(item.status)">{{ getIconName(item.status) }}</mat-icon>
+            <!-- <div *ngIf="i < data.estadoList.length - 1" class="estado-line"></div> -->
+          </div>
+          <div class="estado-details">
+            <h3>{{item.status}}</h3>
+            <p>{{item.date | date: 'fullDate'}}</p>
+            <p>{{item.detail}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>

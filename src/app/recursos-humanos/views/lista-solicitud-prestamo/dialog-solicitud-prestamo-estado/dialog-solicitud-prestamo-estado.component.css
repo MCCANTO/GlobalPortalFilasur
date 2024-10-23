@@ -1,0 +1,60 @@
+/* estado-dialog.component.css */
+.estado-dialog-content {
+    max-height: 80vh; /* Altura máxima del diálogo */
+    overflow-y: hidden; /* Sin scroll en el contenedor del diálogo */
+    padding: 1rem;
+  }
+  
+  .estado-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  .estado-list {
+    flex-grow: 1;
+    max-height: calc(80vh - 60px); /* Ajustar la altura de la lista */
+    overflow-y: auto; /* Scroll solo para la lista de estados */
+    padding: 1rem;
+  }
+  
+  .estado-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 1rem;
+    position: relative;
+  }
+  
+  .estado-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 1rem;
+  }
+  
+  .estado-icon mat-icon {
+    font-size: 1.5rem;
+  }
+  
+
+  
+  .estado-details {
+    flex-grow: 1;
+    margin-left: 1rem;
+  }
+  
+  .icon-pending {
+    color: #FFB900; /* Color amarillo */
+  }
+  
+  .icon-in-process {
+    color: #4CAF50; /* Color verde */
+  }
+  
+  .icon-rejected {
+    color: #F44336; /* Color rojo */
+  }
+  

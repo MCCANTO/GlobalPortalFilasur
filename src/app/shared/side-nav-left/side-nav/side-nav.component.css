@@ -1,0 +1,23 @@
+.active-link {
+  font-weight: bold !important;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+}
+
+.sidenav-icon {
+  margin-right: 18px;
+  margin-bottom: -5px;
+}
+
+.sidenav-header {
+  text-align: center;
+  padding: 20px;
+}
+
+.company-logo {
+  max-width: 100%;
+  height: auto;
+}

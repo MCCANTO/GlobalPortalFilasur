@@ -1,0 +1,256 @@
+<div class="mat-elevation-z8">
+  <div class="prl15 pt10">
+    <mat-horizontal-stepper [linear]="true" #stepper>
+      
+      <!-- Paso 1 -->
+      <mat-step [stepControl]="firstFormGroup">
+        <ng-template matStepLabel>Paso 1</ng-template>
+        <form *ngIf="!isloadingStep" [formGroup]="firstFormGroup" (ngSubmit)="nextStep()" enctype="multipart/form-data">
+          <ng-template matStepLabel>Paso 1</ng-template>
+          <h1>¡Empieza tu solicitud de préstamo aquí!</h1>
+          <p>Rellena los siguientes datos:</p>
+
+          <div class="row">
+            <div class="col-md-4">
+              <mat-form-field appearance="fill">
+                <mat-label>DNI</mat-label>
+                <input matInput formControlName="dni" readonly>
+              </mat-form-field>
+            </div>
+            <div class="col-md-8">
+              <mat-form-field appearance="fill">
+                <mat-label>Nombres completos</mat-label>
+                <input matInput formControlName="nombre_completo" readonly>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <mat-form-field appearance="fill">
+                <mat-label>Area</mat-label>
+                <input matInput formControlName="area" readonly>
+              </mat-form-field>
+            </div>
+            <div class="col-md-8">
+              <mat-form-field appearance="fill">
+                <mat-label>Puesto</mat-label>
+                <input matInput formControlName="puesto" readonly>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <mat-form-field appearance="fill">
+                <mat-label>Correo</mat-label>
+                <input matInput formControlName="correo" readonly>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div style="color: rgb(85, 159, 215); margin-bottom: 8px;">
+                El monto máximo que puedes solicitar es : S/. {{ monto_limite_prestamo }}
+              </div>
+              <mat-form-field appearance="fill">
+                <mat-label>Monto a solicitar</mat-label>
+                <input matInput type="number" min="0" formControlName="monto">
+                <mat-error *ngIf="firstFormGroup.get('monto')?.hasError('required')" style="color: red;">
+                  El monto es requerido.
+                </mat-error>
+                <mat-error *ngIf="firstFormGroup.get('monto')?.hasError('montoExcedido')" style="color: red;">
+                  El monto solicitado excede el monto máximo permitido.
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <mat-form-field class="input-autocomplete">
+            <input type="text" placeholder="Motivo" aria-label="Motivo" matInput 
+              [formControl]="myControl"
+              [matAutocomplete]="auto"
+              (keydown)="preventTyping($event)">
+
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+              <mat-option *ngFor="let option of filteredOptions | async" [value]="option.descripcion">
+                {{ option.descripcion }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <p style="color: grey;">Archivo de sustento *</p>
+          <!-- Adjuntar todos los archivos -->
+          <input type="file" (change)="onFilesSelected($event)" multiple accept=".pdf,image/jpeg,image/png,image/jpg">
+
+          <!-- Terminos y condiciones -->
+          <mat-checkbox formControlName="acceptTerms">
+            He leído y acepto la
+            <a href="#" (click)="openDialogTerminosCondiciones(); $event.preventDefault();">Política de tratamiento de
+              Protección de datos personales</a>
+          </mat-checkbox>
+
+          <div>
+            <button mat-raised-button color="primary" [disabled]="!firstFormGroup.valid">
+              Continuar
+            </button>
+          </div>
+        </form>
+        <mat-card *ngIf="isloadingStep" class="progress-container">
+          <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+        </mat-card>
+      </mat-step>
+
+      <!-- Paso 2 -->
+      <mat-step [stepControl]="secondFormGroup">
+        <ng-template matStepLabel>Paso 2</ng-template>
+        <form *ngIf="!isloadingStep" [formGroup]="secondFormGroup">
+          <ng-template matStepLabel>Paso 2</ng-template>
+          <p>Estimado(a) {{firstFormGroup.get('nombre_completo')?.value}}, has pasado nuestra primera evaluación.</p>
+          <p>Completa los siguientes campos para finalizar:</p>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Monto de crédito solicitado</mat-label>
+            <input matInput formControlName="monto_solicitado" readonly>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Monto con descuento gratificación</mat-label>
+            <input matInput formControlName="creditAmount" readonly>
+          </mat-form-field>
+
+          <div style="color: rgb(85, 159, 215); margin-bottom: 8px;">
+            Opción 1:
+          </div>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Número de meses de descuento</mat-label>
+            <input matInput formControlName="nro_meses_descuento" min="0" type="number" >
+            <mat-error *ngIf="secondFormGroup.get('nro_meses_descuento')?.hasError('maximoValorMeses')">
+              El número de meses no puede ser mayor a 12.
+            </mat-error>
+          </mat-form-field>
+
+          <div style="color: rgb(85, 159, 215); margin-bottom: 8px;">
+            Opción 2:
+          </div>
+
+          <div>Descuento de gratificación:</div>
+
+          <div formGroupName="descuentoGratificacion">
+            <mat-checkbox formControlName="descuento_julio" (change)="toggleDescuentoJulio($event.checked)">Julio</mat-checkbox>
+
+            <mat-form-field *ngIf="secondFormGroup.get('descuentoGratificacion.descuento_julio')?.value"
+              appearance="fill">
+              <mat-label>Monto a descontar Julio</mat-label>
+              <input matInput (input)="actualizarMontoCredito()" formControlName="valor_descuento_julio" type="number">
+              <mat-error
+                *ngIf="secondFormGroup.get('descuentoGratificacion.valor_descuento_julio')?.hasError('montoExcedidoSalario')"
+                style="color: red;">
+                El monto ingresado no puede ser mayor al salario del trabajador.
+              </mat-error>
+              <mat-error
+                *ngIf="secondFormGroup.get('descuentoGratificacion.valor_descuento_julio')?.hasError('montoExcedidoCreditAmount')"
+                style="color: red;">
+                El monto ingresado no puede ser mayor al monto a solicitar.
+              </mat-error>
+
+            </mat-form-field>
+
+            <mat-checkbox formControlName="descuento_diciembre" (change)="toggleDescuentoDiciembre($event.checked)">Diciembre</mat-checkbox>
+            <mat-form-field *ngIf="secondFormGroup.get('descuentoGratificacion.descuento_diciembre')?.value"
+              appearance="fill">
+              <mat-label>Monto a descontar Diciembre</mat-label>
+              <input matInput (input)="actualizarMontoCredito()" formControlName="valor_descuento_diciembre" type="number">
+              <mat-error
+                *ngIf="secondFormGroup.get('descuentoGratificacion.valor_descuento_diciembre')?.hasError('montoExcedidoSalario')"
+                style="color: red;">
+                El monto ingresado no puede ser mayor al salario del trabajador.
+              </mat-error>
+              <mat-error
+                *ngIf="secondFormGroup.get('descuentoGratificacion.valor_descuento_diciembre')?.hasError('montoExcedidoCreditAmount')"
+                style="color: red;">
+                El monto ingresado no puede ser mayor al monto a solicitar.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+
+          <div class="table-responsive" *ngIf="descuentos.controls.length > 0">
+            <table mat-table [dataSource]="descuentos.controls" class="mat-elevation-z8">
+              
+              <!-- Mes y Año Column -->
+              <ng-container matColumnDef="mes">
+                <th mat-header-cell *matHeaderCellDef> Mes </th>
+                <td mat-cell *matCellDef="let descuento"> {{ descuento.get('mes')?.value }} </td>
+              </ng-container>
+          
+              <!-- Monto Column -->
+              <ng-container matColumnDef="monto">
+                <th mat-header-cell *matHeaderCellDef> Monto </th>
+                <td mat-cell *matCellDef="let descuento"> {{ descuento.get('monto')?.value }} </td>
+              </ng-container>
+          
+              <!-- Dscto Extra Column -->
+              <ng-container matColumnDef="gratificacion">
+                <th mat-header-cell *matHeaderCellDef> Dscto Extra </th>
+                <td mat-cell *matCellDef="let descuento"> {{ descuento.get('gratificacion')?.value}} </td>
+              </ng-container>
+          
+              <!-- Total Column -->
+              <ng-container matColumnDef="total">
+                <th mat-header-cell *matHeaderCellDef> Total </th>
+                <td mat-cell *matCellDef="let descuento"> {{ descuento.get('total')?.value}} </td>
+              </ng-container>
+          
+              <!-- Header row definition -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          
+              <!-- Row definition -->
+              <tr mat-row *matRowDef="let descuento; columns: displayedColumns; trackBy: trackByFn"></tr>
+          
+            </table>
+          </div>
+          
+         
+
+          <div>
+            <button mat-raised-button color="primary" matStepperPrevious>Volver</button>
+            <button mat-raised-button color="primary" [disabled]="!secondFormGroup.valid"
+              (click)="GrabarSolicitud()">Confirmar la solicitud</button>
+          </div>
+        </form>
+        <mat-card *ngIf="isloadingStep" class="progress-container">
+          <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+        </mat-card>
+      </mat-step>
+
+      <!-- Paso 3 -->
+      <mat-step [stepControl]="thirdFormGroup">
+        <ng-template matStepLabel>Paso 3</ng-template>
+        <div class="content">
+          <h1>¡Felicitaciones, completaste tu solicitud de préstamo con éxito!</h1>
+          <p>{{firstFormGroup.get('nombre_completo')?.value}}, en breve te llegará un correo confirmando el inicio de
+            la solicitud, ¡hasta luego!</p>
+          <h2>COD. SOLICITUD: 000{{prestamo_id}}</h2>
+          <p>Este código es necesario para consultar el estado de su solicitud</p>
+          <mat-card class="advisor-card">
+            <mat-card-header>
+              <mat-card-title>Filasur S.A.</mat-card-title>
+              <mat-card-subtitle>Brindar soluciones al mercado de confección y marcas globales, creando valor con un espíritu de sostenibilidad.</mat-card-subtitle>
+            </mat-card-header>
+            <img mat-card-image src="../../../../gp/intranet/assets/images/autenticacion/filasur.png" alt="Ekeko">
+            <!-- <img mat-card-image src="../../../../assets/images/autenticacion/inkacrops.png" alt="inkacrops"> -->
+          </mat-card>
+        </div>
+        <div>
+          <button mat-raised-button color="primary" (click)="goToSolicitud()">Ir a bandeja de Solicitudes</button>
+          <!-- <button mat-raised-button color="primary" (click)="onSubmit()">Enviar</button> -->
+        </div>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </div>
+
+
+</div>

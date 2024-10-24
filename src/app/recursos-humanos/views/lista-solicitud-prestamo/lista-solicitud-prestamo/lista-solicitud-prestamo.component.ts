@@ -221,5 +221,7 @@ export class ListaSolicitudPrestamoComponent implements OnInit{
     });
     element.aprobado = element.confirmacion_trabajador === false;
   }
+
+
   
 }

@@ -53,7 +53,8 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
     private _snackBar: MatSnackBar,
     private _snackBars: SnackbarService,
     public dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     this.isloadingStep = false;
     this.usercode = this._jwtTokenService.getUserCode();
@@ -321,7 +322,7 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
   }
 
   addDescuentoFields(numeroMeses: number, startMonth: number, startYear: number, montoPorMes: number) {
-    const startDate = new Date(startYear, startMonth);
+    const startDate = new Date(startYear, startMonth );
     this.descuentos.clear();
 
 
@@ -329,11 +330,10 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
       const newDate = new Date(startDate);
       newDate.setMonth(startDate.getMonth() + i);
       
-      const mesActualizado = newDate.getMonth(); 
+      const mesActualizado = newDate.getMonth() ; 
       const { mes, descripcion, anio } = this.getNumeroMesyDescripcion(newDate);
       
-      console.log(`Generando datos para el mes ${mesActualizado + 1} del año ${anio}`); // Debugging para ver qué meses se están generando
-    
+ 
       /*Agregar monto ingresado en gratificacion julio/diciembre en cuotas/mes */
       let gratificacion = 0;
       if(mes === 6){
@@ -353,6 +353,10 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
         total: [total] //nuevo campo agregado para sumar gratificacion + total
       }));
     }
+
+      // Actualizar el dataSource con los controles del FormArray
+  this.dataSource.data = this.descuentos.controls;
+    this.changeDetectorRef.detectChanges();
   }
 
   getNumeroMesyDescripcion(date: Date): any {
@@ -438,6 +442,10 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
       /* NUEVA COLUMNA DE GRATIFICACION PARA GENERACIÓN DE CUOTAS/MES Y ACTUALIZACIÓN DEL TOTAL */
     this.descuentos.controls.forEach((control, index) => {
       const mes = control.get('numero')?.value;
+      
+
+      console.log('Mes generado:', mes);
+
       let gratificacion = 0;
 
       if (mes == 6) {
@@ -469,10 +477,10 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
   //- Fecha de ingreso mayor a 3 meses para poder registrar
   //- Registro de solo una solicitud
   nextStep(): void {
-    // if (this.files.length === 0) {
-    //   this.openSnackBar('Usted necesita adjuntar al menos 1 documento', 'Cerrar', 'custom-snackbar');
-    //   return;
-    // }
+    if (this.files.length === 0) {
+      this.openSnackBar('Usted necesita adjuntar al menos 1 documento', 'Cerrar', 'custom-snackbar');
+      return;
+    }
   
     if (this.firstFormGroup.valid) {
       const empleado = this.firstFormGroup.get('empleado')?.value;

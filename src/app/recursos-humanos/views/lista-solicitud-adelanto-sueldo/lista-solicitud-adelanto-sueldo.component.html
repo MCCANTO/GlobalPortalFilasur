@@ -127,8 +127,8 @@
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado Conformidad </th>
             <td mat-cell *matCellDef="let element">
                 <mat-slide-toggle
-                [checked]="element.confirmacion_trabajador === true" 
-                [disabled]="element.confirmacion_trabajador === true"
+                [checked]="element.confirmacion_trabajador === true"
+            [disabled]="!element.confirmacion_gerente_rh || !element.confirmacion_bs || element.confirmacion_trabajador === true"
                 (change)="onConformidadChange($event, element)">
               </mat-slide-toggle>
             </td>

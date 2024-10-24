@@ -178,7 +178,7 @@
 
 
           <div class="table-responsive" *ngIf="descuentos.controls.length > 0">
-            <table mat-table [dataSource]="descuentos.controls" class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
               
               <!-- Mes y Año Column -->
               <ng-container matColumnDef="mes">
@@ -208,7 +208,7 @@
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           
               <!-- Row definition -->
-              <tr mat-row *matRowDef="let descuento; columns: displayedColumns; trackBy: trackByFn"></tr>
+              <tr mat-row *matRowDef="let descuento; columns: displayedColumns"></tr>
           
             </table>
           </div>

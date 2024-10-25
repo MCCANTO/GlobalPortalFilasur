@@ -40,10 +40,15 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
   usercode: string;
   prestamo_id!: number;
 
+  puesto_validar!: string;
+
 
   displayedColumns: string[] = ['mes', 'monto', 'gratificacion', 'total'];
   dataSource = new MatTableDataSource<any>(); // Usamos `any` porque vamos a trabajar con objetos dinámicos
 
+// Para operarios (semanas)
+displayedColumnsSemanas: string[] = ['semana', 'monto', 'gratificacion', 'total'];
+dataSourceSemanas = new MatTableDataSource<any>();
 
   constructor(private _formBuilder: FormBuilder, private cdr: ChangeDetectorRef,
     private _jwtTokenService: JwtTokenService,
@@ -81,6 +86,7 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
     this.secondFormGroup = this._formBuilder.group({
       creditAmount: [{ value: '', disabled: true }, Validators.required],
       nro_meses_descuento: [{value: null, disabled: false}, Validators.required],
+      nro_semanas_descuento: [''],
       monto_solicitado: [''],
       descuentoGratificacion: this._formBuilder.group({
         descuento_julio: [{ value: false, disabled: true }],
@@ -190,6 +196,7 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
     // ==========Actualizar el monto de crédito y calcular descuentos
     this.actualizarMontoCredito();
     this.calculateDescuentos();
+    this.calculateCuotasObrero();
   }
 
 
@@ -212,6 +219,7 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
           correo: data[0].correo
         });
       }
+      this.puesto_validar = data[0].puesto;
       this.isloadingStep = false
     }, error => {
       console.error('Error fetching employee data', error);
@@ -356,7 +364,7 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
 
       // Actualizar el dataSource con los controles del FormArray
   this.dataSource.data = this.descuentos.controls;
-    this.changeDetectorRef.detectChanges();
+    //this.changeDetectorRef.detectChanges();
   }
 
   getNumeroMesyDescripcion(date: Date): any {
@@ -364,6 +372,44 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
     const year = date.getFullYear();
     return { mes: date.getMonth(), descripcion: `${month} ${year}`, anio: year };
     
+  }
+
+  calculateDescuentosGeneral() {
+    const isOperario = this.puesto_validar && this.puesto_validar.toLowerCase().includes('operario');
+  
+  if (isOperario) {
+    const numeroSemanas = this.secondFormGroup.get('nro_semanas_descuento')?.value;
+    if (numeroSemanas) {
+      this.calculateCuotasObrero();
+      this.updateDataSourceSemanas(); // Actualiza la tabla de semanas
+    }
+  } else {
+    const numeroMeses = this.secondFormGroup.get('nro_meses_descuento')?.value;
+    if (numeroMeses) {
+      this.calculateDescuentos();
+      this.updateDataSourceMeses(); // Actualiza la tabla de meses
+    }
+  }
+  }
+
+
+  updateDataSourceMeses() {
+    this.dataSource.data = this.descuentos.controls.map(control => ({
+      mes: control.get('mes')?.value,
+      monto: control.get('monto')?.value,
+      gratificacion: control.get('gratificacion')?.value,
+      total: control.get('total')?.value
+    }));
+  }
+  
+  // Actualiza el dataSource para operarios (semanas)
+  updateDataSourceSemanas() {
+    this.dataSourceSemanas.data = this.descuentos.controls.map(control => ({
+      semana: control.get('semana')?.value,
+      monto: control.get('monto')?.value,
+      gratificacion: control.get('gratificacion')?.value,
+      total: control.get('total')?.value
+    }));
   }
 
   calculateDescuentos() {
@@ -466,6 +512,69 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
   }
 
 
+
+
+//VALIDACION PARA CÁCULO DE CUOTAS X SEMANA - CASO OPERARIO
+
+calculateCuotasObrero() {
+  const creditAmount = this.firstFormGroup.get('monto')?.value;
+  const numeroSemanas = this.secondFormGroup.get('nro_semanas_descuento')?.value * 4; // 4 semanas por mes (aprox.)
+  
+  if (!numeroSemanas || numeroSemanas < 1 || numeroSemanas > 30 || numeroSemanas == null) {
+    this.descuentos.clear();
+    return;
+  }
+
+  let montoRestante = creditAmount;
+  const montoPorSemana = (montoRestante / numeroSemanas).toFixed(2);
+
+  const currentDate = new Date();
+  const startWeek = this.getNextWeek(currentDate);
+
+  this.addDescuentoFieldsObrero(numeroSemanas, startWeek, parseFloat(montoPorSemana));
+  console.log("Descuentos (Meses):", this.descuentos.value); 
+}
+
+addDescuentoFieldsObrero(numeroSemanas: number, startDate: Date, montoPorSemana: number) {
+  this.descuentos.clear();
+
+  for (let i = 0; i < numeroSemanas; i++) {
+    const newDate = new Date(startDate);
+    newDate.setDate(newDate.getDate() + (i * 7)); // Sumar una semana
+
+    const semana = this.getWeekNumber(newDate);
+    const descripcion = `Semana ${semana}, ${newDate.getFullYear()}`;
+
+    const total = montoPorSemana.toFixed(2);
+
+    this.descuentos.push(this._formBuilder.group({
+      semana: [semana],
+      mes: [descripcion],
+      monto: [montoPorSemana],
+      total: [total]
+    }));
+  }
+
+  this.dataSourceSemanas.data = this.descuentos.controls;
+  //this.changeDetectorRef.detectChanges();
+}
+
+getNextWeek(date: Date): Date {
+  const nextWeek = new Date(date);
+  nextWeek.setDate(date.getDate() + (7 - date.getDay())); // Siguiente lunes
+  return nextWeek;
+}
+
+getWeekNumber(date: Date): number {
+  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+  const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000;
+  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+}
+
+
+
+
+
   openSnackBar(message: string, action: string, panelClass: string) {
     this._snackBar.open(message, action, {
       duration: 5000,
@@ -477,10 +586,10 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
   //- Fecha de ingreso mayor a 3 meses para poder registrar
   //- Registro de solo una solicitud
   nextStep(): void {
-    if (this.files.length === 0) {
-      this.openSnackBar('Usted necesita adjuntar al menos 1 documento', 'Cerrar', 'custom-snackbar');
-      return;
-    }
+    // if (this.files.length === 0) {
+    //   this.openSnackBar('Usted necesita adjuntar al menos 1 documento', 'Cerrar', 'custom-snackbar');
+    //   return;
+    // }
   
     if (this.firstFormGroup.valid) {
       const empleado = this.firstFormGroup.get('empleado')?.value;
@@ -500,9 +609,16 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
             if(response1[0].validacion === false){
               this.openSnackBar('Aún no cuentas con los requisitos mínimos para solicitar una nuevo préstamo.', 'Cerrar', 'custom-snackbar');
             }else{
-              this.secondFormGroup.get('nro_meses_descuento')?.valueChanges.subscribe(() => {
-                this.calculateDescuentos();
-              });
+              if(!this.puesto_validar.toLowerCase().includes('operario')){
+                this.secondFormGroup.get('nro_meses_descuento')?.valueChanges.subscribe(() => {
+                  this.calculateDescuentos();
+                });
+              }else{
+                this.secondFormGroup.get('nro_semanas_descuento')?.valueChanges.subscribe(() => {
+                  this.calculateCuotasObrero();
+                });
+              }
+              
     
               this.loadConfigurationSegundaPantalla(this.salario);
     

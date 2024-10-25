@@ -110,6 +110,8 @@
           <p>Estimado(a) {{firstFormGroup.get('nombre_completo')?.value}}, has pasado nuestra primera evaluación.</p>
           <p>Completa los siguientes campos para finalizar:</p>
 
+          <p>Es puesto de : {{ puesto_validar }}</p>
+
           <mat-form-field appearance="fill">
             <mat-label>Monto de crédito solicitado</mat-label>
             <input matInput formControlName="monto_solicitado" readonly>
@@ -124,11 +126,20 @@
             Opción 1:
           </div>
 
-          <mat-form-field appearance="fill">
+          <mat-form-field *ngIf="!puesto_validar?.toLowerCase()?.includes('operario')"  appearance="fill">
             <mat-label>Número de meses de descuento</mat-label>
             <input matInput formControlName="nro_meses_descuento" min="0" type="number" >
             <mat-error *ngIf="secondFormGroup.get('nro_meses_descuento')?.hasError('maximoValorMeses')">
               El número de meses no puede ser mayor a 12.
+            </mat-error>
+          </mat-form-field>
+
+           <!-- Campo dinámico para número de semanas (Operario) -->
+          <mat-form-field *ngIf="puesto_validar?.toLowerCase()?.includes('operario')" appearance="fill">
+            <mat-label>Número de semanas de descuento</mat-label>
+            <input matInput formControlName="nro_semanas_descuento" min="0" type="number">
+            <mat-error *ngIf="secondFormGroup.get('nro_semanas_descuento')?.hasError('maximoValorSemanas')">
+              El número de semanas no puede ser mayor a 52.
             </mat-error>
           </mat-form-field>
 
@@ -175,45 +186,80 @@
               </mat-error>
             </mat-form-field>
           </div>
+            
 
-
-          <div class="table-responsive" *ngIf="descuentos.controls.length > 0">
+          <div class="table-responsive" *ngIf="!puesto_validar?.toLowerCase()?.includes('operario') && descuentos.controls.length > 0">
+            <!-- Tabla para empleados (meses) -->
             <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-              
-              <!-- Mes y Año Column -->
+          
+              <!-- Mes Column -->
               <ng-container matColumnDef="mes">
                 <th mat-header-cell *matHeaderCellDef> Mes </th>
-                <td mat-cell *matCellDef="let descuento"> {{ descuento.get('mes')?.value }} </td>
+                <td mat-cell *matCellDef="let descuento"> {{ descuento.mes }} </td>
               </ng-container>
           
               <!-- Monto Column -->
               <ng-container matColumnDef="monto">
                 <th mat-header-cell *matHeaderCellDef> Monto </th>
-                <td mat-cell *matCellDef="let descuento"> {{ descuento.get('monto')?.value }} </td>
+                <td mat-cell *matCellDef="let descuento"> {{ descuento.monto }} </td>
               </ng-container>
           
               <!-- Dscto Extra Column -->
               <ng-container matColumnDef="gratificacion">
                 <th mat-header-cell *matHeaderCellDef> Dscto Extra </th>
-                <td mat-cell *matCellDef="let descuento"> {{ descuento.get('gratificacion')?.value}} </td>
+                <td mat-cell *matCellDef="let descuento"> {{ descuento.gratificacion }} </td>
               </ng-container>
           
               <!-- Total Column -->
               <ng-container matColumnDef="total">
                 <th mat-header-cell *matHeaderCellDef> Total </th>
-                <td mat-cell *matCellDef="let descuento"> {{ descuento.get('total')?.value}} </td>
+                <td mat-cell *matCellDef="let descuento"> {{ descuento.total }} </td>
               </ng-container>
           
-              <!-- Header row definition -->
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          
-              <!-- Row definition -->
               <tr mat-row *matRowDef="let descuento; columns: displayedColumns"></tr>
           
             </table>
           </div>
           
+          <div class="table-responsive" *ngIf="puesto_validar?.toLowerCase()?.includes('operario') && descuentos.controls.length > 0">
+            <!-- Tabla para operarios (semanas) -->
+            <table mat-table [dataSource]="dataSourceSemanas" class="mat-elevation-z8">
+          
+              <!-- Semana Column -->
+              <ng-container matColumnDef="semana">
+                <th mat-header-cell *matHeaderCellDef> Semana </th>
+                <td mat-cell *matCellDef="let descuento"> {{ descuento.semana }} </td>
+              </ng-container>
+          
+              <!-- Monto Column -->
+              <ng-container matColumnDef="monto">
+                <th mat-header-cell *matHeaderCellDef> Monto </th>
+                <td mat-cell *matCellDef="let descuento"> {{ descuento.monto }} </td>
+              </ng-container>
+          
+              <!-- Dscto Extra Column -->
+              <ng-container matColumnDef="gratificacion">
+                <th mat-header-cell *matHeaderCellDef> Dscto Extra </th>
+                <td mat-cell *matCellDef="let descuento"> {{ descuento.gratificacion }} </td>
+              </ng-container>
+          
+              <!-- Total Column -->
+              <ng-container matColumnDef="total">
+                <th mat-header-cell *matHeaderCellDef> Total </th>
+                <td mat-cell *matCellDef="let descuento"> {{ descuento.total }} </td>
+              </ng-container>
+          
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsSemanas"></tr>
+              <tr mat-row *matRowDef="let descuento; columns: displayedColumnsSemanas"></tr>
+          
+            </table>
+          </div>
+          
+          
          
+
+
 
           <div>
             <button mat-raised-button color="primary" matStepperPrevious>Volver</button>

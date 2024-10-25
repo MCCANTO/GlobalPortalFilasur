@@ -182,8 +182,8 @@
                       <!-- <mat-icon *ngIf="mostrarAprobarxGerencia()" (click)="aprobarxGerencia(request)" >check</mat-icon>                  
                       <mat-icon *ngIf="mostrarAprobarxBS()" (click)="aprobarxBs(request)" >check</mat-icon> -->
     
-                      <button mat-icon-button *ngIf="mostrarAprobarxGerencia()" (click)="aprobarxGerencia(request)"><mat-icon>visibility</mat-icon></button>
-                      <button mat-icon-button *ngIf="mostrarAprobarxBS()" (click)="aprobarxBs(request)"><mat-icon>visibility</mat-icon></button>
+                      <button mat-icon-button *ngIf="mostrarAprobarxGerencia()" (click)="aprobarxGerencia(request)" [ngClass]="'custom-button'"><mat-icon>visibility</mat-icon></button>
+                      <button mat-icon-button *ngIf="mostrarAprobarxBS()" (click)="aprobarxBs(request)" [ngClass]="'custom-button'"><mat-icon>visibility</mat-icon></button>
                       <!-- <mat-icon (click)="openEstadoDialog(request)">visibility</mat-icon> -->
                     </div>
                 </td>

@@ -8,6 +8,7 @@ import { ListaSolicitudPrestamoComponent } from './views/lista-solicitud-prestam
 import { ListaAdelantoRemuneracionJefaturaComponent } from './views/solicitud-adelanto-remuneracion/lista-adelanto-remuneracion-jefatura/lista-adelanto-remuneracion-jefatura.component';
 import { ListaSolicitudAdelantoSueldoComponent } from './views/lista-solicitud-adelanto-sueldo/lista-solicitud-adelanto-sueldo.component';
 import { ListaSolicitudAprobacionComponent } from './views/lista-solicitud-prestamo/lista-solicitud-aprobacion/lista-solicitud-aprobacion.component';
+import { PrestamoExtraordinarioComponent } from './views/prestamo-extraordinario/prestamo-extraordinario.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,11 @@ const routes: Routes = [
         path: 'solicitud-prestamo',
         component: SolicitudPrestamoComponent,
         data: { icon: 'table', text: 'Solicitud de Prestamo' }
+      },
+      {
+        path: 'prestamo-extraordinario',
+        component: PrestamoExtraordinarioComponent,
+        data: { icon: 'list', text: 'Préstamo Extraordinario'}
       },
       {
         path: 'lista-solicitud-prestamo',

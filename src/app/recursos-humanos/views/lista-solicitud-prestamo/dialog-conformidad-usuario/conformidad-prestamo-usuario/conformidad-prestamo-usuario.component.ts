@@ -18,6 +18,7 @@ export class ConformidadPrestamoUsuarioComponent implements OnInit{
   usercode!:string;
   displayedColumns: string[] = ['nro', 'nombre', 'accion'];
   documentDataSource = [];
+  puesto_validar!: string;
   
 
 constructor(
@@ -29,6 +30,8 @@ constructor(
   private _jwtTokenService: JwtTokenService
 ){
   this.usercode = this._jwtTokenService.getUserCode();
+  
+
 }
 
 

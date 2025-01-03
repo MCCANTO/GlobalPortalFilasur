@@ -7,6 +7,10 @@
   align-items: center;
 }
 
+.sidenav {
+  width: 328px;
+}
+
 .sidenav-icon {
   margin-right: 18px;
   margin-bottom: -5px;

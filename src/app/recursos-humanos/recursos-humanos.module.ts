@@ -33,6 +33,7 @@ import { DialogSolicitudPrestamoRechazoGerenciaComponent } from './components/di
 import { DialogSolicitudAdelantoBsRechazoComponent } from './components/dialog-solicitud-adelanto-bs-rechazo/dialog-solicitud-adelanto-bs-rechazo.component';
 import { DialogSolicitudAdelantoGerenciaRechazoComponent } from './components/dialog-solicitud-adelanto-gerencia-rechazo/dialog-solicitud-adelanto-gerencia-rechazo.component';
 import { AlertBoxComponent } from './components/alert-box/alert-box.component';
+import { PrestamoExtraordinarioComponent } from './views/prestamo-extraordinario/prestamo-extraordinario.component';
 
 
 @NgModule({
@@ -67,6 +68,7 @@ import { AlertBoxComponent } from './components/alert-box/alert-box.component';
     DialogSolicitudAdelantoBsRechazoComponent,
     DialogSolicitudAdelantoGerenciaRechazoComponent,
     AlertBoxComponent,
+    PrestamoExtraordinarioComponent
   ],
   imports: [
     CommonModule,

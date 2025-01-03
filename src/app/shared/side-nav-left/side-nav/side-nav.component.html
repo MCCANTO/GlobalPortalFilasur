@@ -1,30 +1,32 @@
+
 <div class="sidenav-header">
-  <!-- <img src="../../../../assets/images/login/logo-inkacrops.png" 
-      alt="Logo de la empresa" class="company-logo"> -->
-  <img src="../../../../gp/intranet/assets/images/login/logo-filasur.png" 
-      alt="Logo de la empresa" class="company-logo">    
+  <!--<img src="../../../../assets/images/login/logo-inkacrops.png" 
+      alt="Logo de la empresa" class="company-logo">-->
+   <img src="../../../../gp/intranet/assets/images/login/logo-filasur.png" 
+      alt="Logo de la empresa" class="company-logo">     
 </div>
-<mat-nav-list>
-  <ng-container *ngFor="let item of routes">
-    <ng-container *ngIf="item.children; else singleLink">
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
+
+  <mat-nav-list>
+    <ng-container *ngFor="let item of routes">
+      <ng-container *ngIf="item.children; else singleLink">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-icon color="primary" class="sidenav-icon">{{ item.data?.['icon'] }}</mat-icon>
+            <span>{{ item.data?.['text'] }}</span>
+          </mat-expansion-panel-header>
+          <ng-container class="sidenav" *ngFor="let child of item.children">
+            <a mat-list-item [routerLinkActive]="'active-link'" [routerLink]="[item.path, child.path]" class="nav-link" (click)="onMenuClick()">
+              <mat-icon color="primary" class="sidenav-icon">{{ child.data?.['icon'] }}</mat-icon>
+              <span>{{ child.data?.['text'] }}</span>
+            </a>
+          </ng-container>
+        </mat-expansion-panel>
+      </ng-container>
+      <ng-template #singleLink>
+        <a mat-list-item [routerLinkActive]="'active-link'" [routerLink]="[item.path]" class="nav-link" (click)="onMenuClick()">
           <mat-icon color="primary" class="sidenav-icon">{{ item.data?.['icon'] }}</mat-icon>
           <span>{{ item.data?.['text'] }}</span>
-        </mat-expansion-panel-header>
-        <ng-container *ngFor="let child of item.children">
-          <a mat-list-item [routerLinkActive]="'active-link'" [routerLink]="[item.path, child.path]" class="nav-link" (click)="onMenuClick()">
-            <mat-icon color="primary" class="sidenav-icon">{{ child.data?.['icon'] }}</mat-icon>
-            <span>{{ child.data?.['text'] }}</span>
-          </a>
-        </ng-container>
-      </mat-expansion-panel>
+        </a>
+      </ng-template>
     </ng-container>
-    <ng-template #singleLink>
-      <a mat-list-item [routerLinkActive]="'active-link'" [routerLink]="[item.path]" class="nav-link" (click)="onMenuClick()">
-        <mat-icon color="primary" class="sidenav-icon">{{ item.data?.['icon'] }}</mat-icon>
-        <span>{{ item.data?.['text'] }}</span>
-      </a>
-    </ng-template>
-  </ng-container>
-</mat-nav-list>
+  </mat-nav-list>

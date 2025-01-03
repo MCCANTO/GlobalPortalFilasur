@@ -12,9 +12,11 @@ export function montoMaximoValidator(montoLimite: number): ValidatorFn {
 
 export function montoExcedidoGratificacion(salario: number,creditAmountControl: AbstractControl): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
+
     if (control.value > salario) {
       return { 'montoExcedidoSalario': { value: control.value } };
     }
+
     if (control.value > creditAmountControl.value) {
       return { 'montoExcedidoCreditAmount': { value: control.value } };
     }

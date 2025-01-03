@@ -32,7 +32,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     TopNavComponent,
     StatComponent,
     DashboardComponent,
-    UserProfileComponent,
+    UserProfileComponent
   ],
   imports: [
     BrowserModule,

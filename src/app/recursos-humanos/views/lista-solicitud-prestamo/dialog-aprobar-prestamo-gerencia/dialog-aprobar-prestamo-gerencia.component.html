@@ -18,7 +18,9 @@
                                     </mat-card-header>
                                     <mat-card-content>
                                         <p><strong>Monto Solicitado:</strong> {{ data.request.monto }}</p>
-                                        <p><strong>Cuotas:</strong> {{data.request.nro_meses_descuento}}</p>
+                                        <p><strong>Cuotas:</strong> 
+                                            {{  data.request.puesto.toLowerCase().includes('operario') ? data.request.nro_semanas_descuento : data.request.nro_meses_descuento }}
+                                        </p>
                                         <div *ngFor="let descuento of getDescuentoGratificacion()">
                                             <p><strong>{{ descuento.titulo }}:</strong> Sí</p>
                                             <p><strong>Monto {{ descuento.titulo }}:</strong> {{ descuento.monto }}</p>
@@ -40,14 +42,25 @@
                                     <mat-card-content>
                                         <div class="responsive-table-container mat-elevation-z8">
                                             <table mat-table [dataSource]="data.details" class="mat-elevation-z8">
+
                                                 <ng-container matColumnDef="mes">
-                                                    <th mat-header-cell *matHeaderCellDef> Mes </th>
-                                                    <td mat-cell *matCellDef="let element"> {{ getMonthName(element.mes) }} </td>
+                                                    <th mat-header-cell *matHeaderCellDef> 
+                                                        {{ data.request.puesto
+                                                            .toLowerCase()
+                                                            .includes('operario') ? 'Semanas' : 'Meses' }}
+                                                    </th>
+                                                    <td mat-cell *matCellDef="let element"> 
+                                                        {{ data.request.puesto
+                                                                        .toLowerCase()
+                                                                        .includes('operario') ? element.numero : getMonthName(element.numero) }} 
+                                                    </td>
                                                 </ng-container>
+
                                                 <ng-container matColumnDef="valor_descuento">
                                                     <th mat-header-cell *matHeaderCellDef> Monto </th>
                                                     <td mat-cell *matCellDef="let element"> {{element.valor_descuento}} </td>
                                                 </ng-container>
+                                                
                                                 <tr mat-header-row *matHeaderRowDef="['mes', 'valor_descuento']"></tr>
                                                 <tr mat-row *matRowDef="let row; columns: ['mes', 'valor_descuento'];"></tr>
                                             </table>

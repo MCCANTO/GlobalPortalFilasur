@@ -133,7 +133,7 @@
               El número de meses no puede ser mayor a 12.
             </mat-error>
           </mat-form-field>
-
+          
            <!-- Campo dinámico para número de semanas (Operario) -->
           <mat-form-field *ngIf="puesto_validar?.toLowerCase()?.includes('operario')" appearance="fill">
             <mat-label>Número de semanas de descuento</mat-label>
@@ -192,25 +192,25 @@
             <!-- Tabla para empleados (meses) -->
             <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
           
-              <!-- Mes Column -->
+              
               <ng-container matColumnDef="mes">
                 <th mat-header-cell *matHeaderCellDef> Mes </th>
                 <td mat-cell *matCellDef="let descuento"> {{ descuento.mes }} </td>
               </ng-container>
           
-              <!-- Monto Column -->
+              
               <ng-container matColumnDef="monto">
                 <th mat-header-cell *matHeaderCellDef> Monto </th>
                 <td mat-cell *matCellDef="let descuento"> {{ descuento.monto }} </td>
               </ng-container>
           
-              <!-- Dscto Extra Column -->
+             
               <ng-container matColumnDef="gratificacion">
                 <th mat-header-cell *matHeaderCellDef> Dscto Extra </th>
                 <td mat-cell *matCellDef="let descuento"> {{ descuento.gratificacion }} </td>
               </ng-container>
           
-              <!-- Total Column -->
+              
               <ng-container matColumnDef="total">
                 <th mat-header-cell *matHeaderCellDef> Total </th>
                 <td mat-cell *matCellDef="let descuento"> {{ descuento.total }} </td>
@@ -226,33 +226,33 @@
             <!-- Tabla para operarios (semanas) -->
             <table mat-table [dataSource]="dataSourceSemanas" class="mat-elevation-z8">
           
-              <!-- Semana Column -->
+             
               <ng-container matColumnDef="semana">
                 <th mat-header-cell *matHeaderCellDef> Semana </th>
                 <td mat-cell *matCellDef="let descuento"> {{ descuento.semana }} </td>
               </ng-container>
           
-              <!-- Monto Column -->
+              
               <ng-container matColumnDef="monto">
                 <th mat-header-cell *matHeaderCellDef> Monto </th>
                 <td mat-cell *matCellDef="let descuento"> {{ descuento.monto }} </td>
               </ng-container>
           
-              <!-- Dscto Extra Column -->
+              
               <ng-container matColumnDef="gratificacion">
                 <th mat-header-cell *matHeaderCellDef> Dscto Extra </th>
                 <td mat-cell *matCellDef="let descuento"> {{ descuento.gratificacion }} </td>
               </ng-container>
           
-              <!-- Total Column -->
+              
               <ng-container matColumnDef="total">
                 <th mat-header-cell *matHeaderCellDef> Total </th>
                 <td mat-cell *matCellDef="let descuento"> {{ descuento.total }} </td>
               </ng-container>
           
-              <tr mat-header-row *matHeaderRowDef="displayedColumnsSemanas"></tr>
-              <tr mat-row *matRowDef="let descuento; columns: displayedColumnsSemanas"></tr>
-          
+              <tr mat-header-row *matHeaderRowDef="['semana', 'monto', 'gratificacion', 'total']"></tr>
+              <tr mat-row *matRowDef="let descuento; columns: ['semana', 'monto', 'gratificacion', 'total'];"></tr>
+  
             </table>
           </div>
           

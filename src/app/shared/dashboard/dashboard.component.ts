@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit{
     this.nombre = this.capitalizeNombre(this.jwtTokenService.getNombreUsuario())/*.toLocaleLowerCase()*/;
 
     //this.nombre = this.jwtTokenService.getNombreUsuario().toLocaleLowerCase();
-    console.log(this.jwtTokenService.getNombreUsuario().toLocaleLowerCase())
+    //console.log(this.jwtTokenService.getNombreUsuario().toLocaleLowerCase())
   }
 
   ngOnInit(): void {

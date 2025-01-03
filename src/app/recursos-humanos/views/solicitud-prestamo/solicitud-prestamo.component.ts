@@ -42,12 +42,13 @@ export class SolicitudPrestamoComponent implements OnInit, AfterViewInit {
 
   puesto_validar!: string;
 
-
+// Para empleados (meses)
   displayedColumns: string[] = ['mes', 'monto', 'gratificacion', 'total'];
   dataSource = new MatTableDataSource<any>(); // Usamos `any` porque vamos a trabajar con objetos dinámicos
 
 // Para operarios (semanas)
 displayedColumnsSemanas: string[] = ['semana', 'monto', 'gratificacion', 'total'];
+//displayedColumnsSemanas: string[] = ['semana', 'monto'];
 dataSourceSemanas = new MatTableDataSource<any>();
 
   constructor(private _formBuilder: FormBuilder, private cdr: ChangeDetectorRef,
@@ -83,10 +84,12 @@ dataSourceSemanas = new MatTableDataSource<any>();
     /**
      *  Segun Formulario (2do Paso)
      */
+    
     this.secondFormGroup = this._formBuilder.group({
-      creditAmount: [{ value: '', disabled: true }, Validators.required],
-      nro_meses_descuento: [{value: null, disabled: false}, Validators.required],
-      nro_semanas_descuento: [''],
+      creditAmount: [{ value: '', disabled: true }, Validators.required], 
+      //se quitó campo requerido para n° meses y semanas
+      nro_meses_descuento: [{value: null, disabled: false}],
+      nro_semanas_descuento: [{value: null, disabled: false}],
       monto_solicitado: [''],
       descuentoGratificacion: this._formBuilder.group({
         descuento_julio: [{ value: false, disabled: true }],
@@ -100,9 +103,6 @@ dataSourceSemanas = new MatTableDataSource<any>();
 
   }
 
-  trackByFn(index: number, item: any) {
-    return index; // O algún identificador único del objeto
-  }
 
   goToSolicitud(): void {
     this.router.navigate(['/recursos-humanos/lista-solicitud-prestamo']);
@@ -113,6 +113,25 @@ dataSourceSemanas = new MatTableDataSource<any>();
     this.completarInformacionEmpleadoxPrestamo(this.usercode);
     this.getMontoMaximo(this.usercode);
 
+   /* this.secondFormGroup.get('descuentoGratificacion.valor_descuento_julio')?.valueChanges.subscribe(value => {
+      this.updateGratificationRow('Gratificación Julio', parseFloat(value || '0'));
+    });
+  
+    this.secondFormGroup.get('descuentoGratificacion.valor_descuento_diciembre')?.valueChanges.subscribe(value => {
+      this.updateGratificationRow('Gratificación Diciembre', parseFloat(value || '0'));
+    });
+  }
+  
+  // Actualizar la fila de gratificación en la tabla cuando cambian los valores
+  updateGratificationRow(gratificationType: string, value: number) {
+    const gratificationControl = this.descuentos.controls.find(control => control.get('semana')?.value === gratificationType);
+    if (gratificationControl) {
+      gratificationControl.get('gratificacion')?.setValue(value);
+      gratificationControl.get('total')?.setValue(value);  // Actualizar total para reflejar solo gratificación
+  
+      this.updateDataSourceSemanas();
+    }
+    */
   }
 
   /***********  CARGAS INICIALES (VALIDACION MONTO Y SELECT MOTIVO) *****************/
@@ -179,7 +198,7 @@ dataSourceSemanas = new MatTableDataSource<any>();
   }
 
   loadConfigurationSegundaPantalla(salario: Number): void {
-    const creditAmountControl = this.secondFormGroup.get('creditAmount');
+    const creditAmountControl = this.secondFormGroup.get('monto_solicitado');
     const valorDescuentoJulioControl = this.secondFormGroup.get('descuentoGratificacion.valor_descuento_julio');
     const valorDescuentoDiciembreControl = this.secondFormGroup.get('descuentoGratificacion.valor_descuento_diciembre');
 
@@ -228,9 +247,9 @@ dataSourceSemanas = new MatTableDataSource<any>();
   }
 
   GrabarSolicitud(): void {
-    if (this.secondFormGroup.get('nro_meses_descuento')?.value) {
+    // if (this.secondFormGroup.get('nro_meses_descuento')?.value) {
       
-    }
+    // }
 
     const dialogRef = this.dialog.open(DialogApprobalConfirmUserComponent);
 
@@ -242,34 +261,71 @@ dataSourceSemanas = new MatTableDataSource<any>();
   }
 
  toggleDescuentoJulio(value: boolean) {
+
+    const isOperario = this.puesto_validar && this.puesto_validar.toLowerCase().includes('operario');
     const valorDescuentoJulio = this.secondFormGroup.get('descuentoGratificacion.valor_descuento_julio');
-    if (value) {
-      valorDescuentoJulio?.enable();
-    } else {
-      valorDescuentoJulio?.setValue(null); // Limpia el valor
-      valorDescuentoJulio?.disable();
+
+    if(isOperario){
+      if (value) {
+        valorDescuentoJulio?.enable();
+      } else {
+        valorDescuentoJulio?.setValue(null); // Limpia el valor
+        valorDescuentoJulio?.disable();
+      }
+      valorDescuentoJulio?.updateValueAndValidity();
+      this.calculateCuotasObrero();
+    }else{
+      if (value) {
+        valorDescuentoJulio?.enable();
+      } else {
+        valorDescuentoJulio?.setValue(null); // Limpia el valor
+        valorDescuentoJulio?.disable();
+      }
+      valorDescuentoJulio?.updateValueAndValidity();
+      this.calculateDescuentos();
     }
-    valorDescuentoJulio?.updateValueAndValidity();
-    this.calculateDescuentos();
+  
   }
 
   toggleDescuentoDiciembre(value: boolean) {
+    const isOperario = this.puesto_validar && this.puesto_validar.toLowerCase().includes('operario');
     const valorDescuentoDiciembre = this.secondFormGroup.get('descuentoGratificacion.valor_descuento_diciembre');
-    if (value) {
-      valorDescuentoDiciembre?.enable();
-    } else {
-      valorDescuentoDiciembre?.setValue(null); // Limpia el valor
-    valorDescuentoDiciembre?.disable();
+
+    if(isOperario){
+      if (value) {
+        valorDescuentoDiciembre?.enable();
+      } else {
+        valorDescuentoDiciembre?.setValue(null); // Limpia el valor
+      valorDescuentoDiciembre?.disable();
+      }
+      valorDescuentoDiciembre?.updateValueAndValidity();
+      this.calculateCuotasObrero();
+    }else{
+      if (value) {
+        valorDescuentoDiciembre?.enable();
+      } else {
+        valorDescuentoDiciembre?.setValue(null); // Limpia el valor
+      valorDescuentoDiciembre?.disable();
+      }
+      valorDescuentoDiciembre?.updateValueAndValidity();
+      this.calculateDescuentos();
     }
-    valorDescuentoDiciembre?.updateValueAndValidity();
-    this.calculateDescuentos();
+
+    
   }
 
 
 
   onSubmit() {
+    const isOperario = this.puesto_validar && this.puesto_validar.toLowerCase().includes('operario');
     if (this.firstFormGroup.valid && this.secondFormGroup.valid) {
       this.isloadingStep = true;
+
+      //console.log('formStep1', this.firstFormGroup.value)
+      console.log('formStep2', this.secondFormGroup.value)
+      
+
+      
       const formValue = {
         ...this.firstFormGroup.getRawValue(),
         //monto: this.secondFormGroup.get('creditAmount')?.value,
@@ -278,16 +334,18 @@ dataSourceSemanas = new MatTableDataSource<any>();
         valor_descuento_julio: this.secondFormGroup.get('descuentoGratificacion.valor_descuento_julio')?.value || 0,
         descuento_diciembre: this.secondFormGroup.get('descuentoGratificacion.descuento_diciembre')?.value ? true : false,
         valor_descuento_diciembre: this.secondFormGroup.get('descuentoGratificacion.valor_descuento_diciembre')?.value || 0,
-
-        descuentos: this.descuentos.controls.map((control) => {
-          return {
-            mes: control.value.numero + 1,
-            anio: control.value.anio.toString(),
-            valor_descuento: control.value.monto
-          };
-        })
+        
+        descuentos: this.descuentos.controls
+          .filter(control => control.value.anio !== undefined)//evitar tomar en cuenta valores año de gratificaciones 
+          .map((control) => {      
+            return {
+              numero: control.value.numero,
+              anio: control.value.anio.toString(),
+              valor_descuento: control.value.monto
+            };            
+          })
       };
-
+      
       this.registrarPrestamo.RegistrarPrestamo(formValue).subscribe(
         response => {
           this.isloadingStep = false;
@@ -306,7 +364,7 @@ dataSourceSemanas = new MatTableDataSource<any>();
       )
 
     } else {
-      console.log('Formulario no válido');
+      //console.log('Formulario no válido');
     }
     this.showEnviarButton = false;
   }
@@ -329,7 +387,7 @@ dataSourceSemanas = new MatTableDataSource<any>();
     return this.secondFormGroup.get('descuentos') as FormArray;
   }
 
-  addDescuentoFields(numeroMeses: number, startMonth: number, startYear: number, montoPorMes: number) {
+  addDescuentoFieldsEmpleado(numeroMeses: number, startMonth: number, startYear: number, montoPorMes: number) {
     const startDate = new Date(startYear, startMonth );
     this.descuentos.clear();
 
@@ -340,13 +398,17 @@ dataSourceSemanas = new MatTableDataSource<any>();
       
       const mesActualizado = newDate.getMonth() ; 
       const { mes, descripcion, anio } = this.getNumeroMesyDescripcion(newDate);
+
+      console.log('fecha inicio', newDate)
+      console.log('Meses add', mes)
+      console.log('Numero mes',this.getNumeroMesyDescripcion(newDate))
+        
       
- 
       /*Agregar monto ingresado en gratificacion julio/diciembre en cuotas/mes */
       let gratificacion = 0;
-      if(mes === 6){
+      if(mes === 7){
         gratificacion = parseFloat(this.secondFormGroup.get('descuentoGratificacion.valor_descuento_julio')?.value || '0');
-      }else if (mes === 11){
+      }else if (mes === 12){
         gratificacion = parseFloat(this.secondFormGroup.get('descuentoGratificacion.valor_descuento_diciembre')?.value || '0')
       }
 
@@ -363,14 +425,22 @@ dataSourceSemanas = new MatTableDataSource<any>();
     }
 
       // Actualizar el dataSource con los controles del FormArray
-  this.dataSource.data = this.descuentos.controls;
+  //this.dataSource.data = this.descuentos.controls;
+
+  this.dataSource.data = this.descuentos.controls.map(control => ({
+    mes: control.get('mes')?.value,
+    monto: control.get('monto')?.value,
+    gratificacion: control.get('gratificacion')?.value,
+    total: control.get('total')?.value
+  }));
     //this.changeDetectorRef.detectChanges();
   }
 
   getNumeroMesyDescripcion(date: Date): any {
     const month = date.toLocaleString('default', { month: 'long' });
     const year = date.getFullYear();
-    return { mes: date.getMonth(), descripcion: `${month} ${year}`, anio: year };
+    const numeroMes = date.getMonth() + 1;
+    return { mes: numeroMes, descripcion: `${month} ${year}`, anio: year };
     
   }
 
@@ -381,13 +451,13 @@ dataSourceSemanas = new MatTableDataSource<any>();
     const numeroSemanas = this.secondFormGroup.get('nro_semanas_descuento')?.value;
     if (numeroSemanas) {
       this.calculateCuotasObrero();
-      this.updateDataSourceSemanas(); // Actualiza la tabla de semanas
+      //this.updateDataSourceSemanas(); // Actualiza la tabla de semanas
     }
   } else {
     const numeroMeses = this.secondFormGroup.get('nro_meses_descuento')?.value;
     if (numeroMeses) {
       this.calculateDescuentos();
-      this.updateDataSourceMeses(); // Actualiza la tabla de meses
+      //this.updateDataSourceMeses(); // Actualiza la tabla de meses
     }
   }
   }
@@ -403,23 +473,31 @@ dataSourceSemanas = new MatTableDataSource<any>();
   }
   
   // Actualiza el dataSource para operarios (semanas)
-  updateDataSourceSemanas() {
-    this.dataSourceSemanas.data = this.descuentos.controls.map(control => ({
-      semana: control.get('semana')?.value,
-      monto: control.get('monto')?.value,
-      gratificacion: control.get('gratificacion')?.value,
-      total: control.get('total')?.value
-    }));
-  }
+
 
   calculateDescuentos() {
     // Habilitar o Deshabilitar los checkbox de Gratificacion
     const creditAmount = this.firstFormGroup.get('monto')?.value;
 
     const numeroMeses = this.secondFormGroup.get('nro_meses_descuento')?.value;
-    console.log("Número de meses ingresado:", numeroMeses); // Debug
+
+    //Validación para inactivar controles mat-checkbox si el valor nro_meses_descuento es limpiado
+    const descuentoJulioControl = this.secondFormGroup.get('descuentoGratificacion.descuento_julio');
+    const descuentoDiciembreControl = this.secondFormGroup.get('descuentoGratificacion.descuento_diciembre');
+    const valorDescuentoJulioControl = this.secondFormGroup.get('descuentoGratificacion.valor_descuento_julio');
+    const valorDescuentoDiciembreControl = this.secondFormGroup.get('descuentoGratificacion.valor_descuento_diciembre');
+
+    //console.log("Número de meses ingresado:", numeroMeses); // Debug
 
     if (!numeroMeses || numeroMeses < 1  || numeroMeses > 12  || numeroMeses == '') {
+      //Limpiar controles checkbox e input gratificación
+      descuentoJulioControl?.disable();
+      descuentoJulioControl?.setValue(false); // Desmarcar checkbox
+      valorDescuentoJulioControl?.reset(); // Limpiar valor del input de descuento de julio
+      descuentoDiciembreControl?.disable();
+      descuentoDiciembreControl?.setValue(false); // Desmarcar checkbox
+      valorDescuentoDiciembreControl?.reset();
+      //Limpiar tabla dinámica
       this.descuentos.clear();
       return;
     }
@@ -445,13 +523,10 @@ dataSourceSemanas = new MatTableDataSource<any>();
       const currentDate = new Date();
       const startMonth = currentDate.getMonth()+1; // Siguiente mes
       const startYear = currentDate.getFullYear();
-
-      console.log("Fecha inicial:", startMonth, startYear);
-
       const endDate = new Date(currentDate);
       endDate.setMonth(endDate.getMonth() + numeroMeses);
 
-      console.log("Fecha final (endDate):", endDate); // Debug
+      //console.log("Fecha final (endDate):", endDate); // Debug
 
       // Fechas de julio y diciembre del año actual y del siguiente
       const julioActual = new Date(currentDate.getFullYear(), 6, 1); // Julio es el mes 6
@@ -479,10 +554,11 @@ dataSourceSemanas = new MatTableDataSource<any>();
         this.secondFormGroup.get('descuentoGratificacion.descuento_diciembre')?.enable();
       } else {
         this.secondFormGroup.get('descuentoGratificacion.descuento_diciembre')?.disable();
+
       }
 
 
-      this.addDescuentoFields(numeroMeses, startMonth, startYear, parseFloat(montoPorMes));
+      this.addDescuentoFieldsEmpleado(numeroMeses, startMonth, startYear, parseFloat(montoPorMes));
 
 
       /* NUEVA COLUMNA DE GRATIFICACION PARA GENERACIÓN DE CUOTAS/MES Y ACTUALIZACIÓN DEL TOTAL */
@@ -490,7 +566,7 @@ dataSourceSemanas = new MatTableDataSource<any>();
       const mes = control.get('numero')?.value;
       
 
-      console.log('Mes generado:', mes);
+      //console.log('Mes generado:', mes);
 
       let gratificacion = 0;
 
@@ -507,7 +583,7 @@ dataSourceSemanas = new MatTableDataSource<any>();
       const total = (montoPorMes + gratificacion).toFixed(2);
       control.get('total')?.setValue(total);
     });
-    console.log("Descuentos generados:", this.descuentos.controls.length);
+    //console.log("Descuentos generados:", this.descuentos.controls.length);
     }
   }
 
@@ -518,21 +594,107 @@ dataSourceSemanas = new MatTableDataSource<any>();
 
 calculateCuotasObrero() {
   const creditAmount = this.firstFormGroup.get('monto')?.value;
-  const numeroSemanas = this.secondFormGroup.get('nro_semanas_descuento')?.value * 4; // 4 semanas por mes (aprox.)
+  const numeroSemanas = this.secondFormGroup.get('nro_semanas_descuento')?.value; // 4 semanas por mes (aprox.)
+
+  //Validación para inactivar controles mat-checkbox si el valor nro_meses_descuento es limpiado
+  const descuentoJulioControl = this.secondFormGroup.get('descuentoGratificacion.descuento_julio');
+  const descuentoDiciembreControl = this.secondFormGroup.get('descuentoGratificacion.descuento_diciembre');
+  const valorDescuentoJulioControl = this.secondFormGroup.get('descuentoGratificacion.valor_descuento_julio');
+  const valorDescuentoDiciembreControl = this.secondFormGroup.get('descuentoGratificacion.valor_descuento_diciembre');
+  
   
   if (!numeroSemanas || numeroSemanas < 1 || numeroSemanas > 30 || numeroSemanas == null) {
+    //Limpiar controles checkbox e input gratificación
+    descuentoJulioControl?.disable();
+    descuentoJulioControl?.setValue(false); // Desmarcar checkbox
+    valorDescuentoJulioControl?.reset(); // Limpiar valor del input de descuento de julio
+    descuentoDiciembreControl?.disable();
+    descuentoDiciembreControl?.setValue(false); // Desmarcar checkbox
+    valorDescuentoDiciembreControl?.reset();
+    //Limpiar tabla dinámica
     this.descuentos.clear();
     return;
   }
 
-  let montoRestante = creditAmount;
-  const montoPorSemana = (montoRestante / numeroSemanas).toFixed(2);
+  if(creditAmount && numeroSemanas){
+    let montoRestante = creditAmount
 
+    const descuentoJulio = this.secondFormGroup.get('descuentoGratificacion.descuento_julio')?.value;
+    const valorDescuentoJulio = parseFloat(this.secondFormGroup.get('descuentoGratificacion.valor_descuento_julio')?.value || '0');
+
+    if (descuentoJulio) {
+      montoRestante -= valorDescuentoJulio;
+    }
+
+    const descuentoDiciembre = this.secondFormGroup.get('descuentoGratificacion.descuento_diciembre')?.value;
+    const valorDescuentoDiciembre = parseFloat(this.secondFormGroup.get('descuentoGratificacion.valor_descuento_diciembre')?.value || '0');
+
+    if (descuentoDiciembre) {
+      montoRestante -= valorDescuentoDiciembre;
+    }
+
+
+  const montoPorSemana = (montoRestante / numeroSemanas).toFixed(2);
   const currentDate = new Date();
   const startWeek = this.getNextWeek(currentDate);
+  const endDate = new Date(currentDate);
+  endDate.setDate(currentDate.getDate() + (numeroSemanas * 7));
+
+  const julio= 6;
+  const diciembre= 11;
+  const isMonthInRange = (date: Date, month: number): boolean =>{
+    return date.getMonth() === month && date >= currentDate && date <= endDate;
+  };
+
+// Verificar si julio y diciembre están en el rango de semanas generadas
+const enableCheckboxJulio = isMonthInRange(new Date(currentDate.getFullYear(), julio, 1), julio) ||isMonthInRange(new Date(currentDate.getFullYear() + 1, julio, 1), julio);
+const enableCheckboxDiciembre = isMonthInRange(new Date(currentDate.getFullYear(), diciembre, 1), diciembre) || isMonthInRange(new Date(currentDate.getFullYear() + 1, diciembre, 1), diciembre);
+
+
+// Habilitar y deshabilitar los checkboxes de descuento de gratificación
+if (enableCheckboxJulio) {
+  this.secondFormGroup.get('descuentoGratificacion.descuento_julio')?.enable();
+} else {
+  this.secondFormGroup.get('descuentoGratificacion.descuento_julio')?.disable();
+}
+
+if (enableCheckboxDiciembre) {
+  this.secondFormGroup.get('descuentoGratificacion.descuento_diciembre')?.enable();
+} else {
+  this.secondFormGroup.get('descuentoGratificacion.descuento_diciembre')?.disable();
+}
+
+
 
   this.addDescuentoFieldsObrero(numeroSemanas, startWeek, parseFloat(montoPorSemana));
-  console.log("Descuentos (Meses):", this.descuentos.value); 
+  //console.log("Descuentos (Meses):", this.descuentos.value); 
+
+ // Actualizar los campos de gratificación en las semanas correspondientes
+ /*
+ this.descuentos.controls.forEach((control, index) => {
+
+  const weekDate = new Date(currentDate);
+  weekDate.setDate(currentDate.getDate() + (index * 7));
+
+  let gratificacion = 0;
+  if (weekDate.getMonth() === julio) {
+    gratificacion = valorDescuentoJulio;
+  } else if (weekDate.getMonth() === diciembre) {
+    gratificacion = valorDescuentoDiciembre;
+  }
+  
+  control.get('gratificacion')?.setValue(gratificacion);
+
+  // Actualizar el total (monto semanal + gratificación)
+
+  const montoPorSemana = parseFloat(control.get('monto')?.value);
+  const total = (montoPorSemana + gratificacion).toFixed(2);
+  control.get('total')?.setValue(total);
+});*/
+
+this.addGratificationRows(valorDescuentoJulio, valorDescuentoDiciembre);
+
+  }
 }
 
 addDescuentoFieldsObrero(numeroSemanas: number, startDate: Date, montoPorSemana: number) {
@@ -543,20 +705,77 @@ addDescuentoFieldsObrero(numeroSemanas: number, startDate: Date, montoPorSemana:
     newDate.setDate(newDate.getDate() + (i * 7)); // Sumar una semana
 
     const semana = this.getWeekNumber(newDate);
-    const descripcion = `Semana ${semana}, ${newDate.getFullYear()}`;
+    const anio = newDate.getFullYear();
+    const mes = this.getMonthName(newDate);
+    
+    const descripcion = `${mes}, Semana ${semana}, ${anio}`;
 
-    const total = montoPorSemana.toFixed(2);
+
+
+   
+    //Condicional para sumar cantidad de gratificacion en fechas julio/diciembre- no aplica para obrero
+
+    let gratificacion = 0;
+    /*
+    if(semana ===28 && this.secondFormGroup.get('descuentoGratificacion.descuento_julio')?.value){
+
+      gratificacion = parseFloat(this.secondFormGroup.get('descuentoGratificacion.valor_descuento_julio')?.value ||'0');
+    }
+    else if (semana === 48 && this.secondFormGroup.get('descuentoGratificacion.descuento_diciembre')?.value){
+
+      gratificacion = parseFloat(this.secondFormGroup.get('descuentoGratificacion.valor_descuento_diciembre')?.value || '0')
+    }*/
+
+    const total = (montoPorSemana+gratificacion).toFixed(2);
 
     this.descuentos.push(this._formBuilder.group({
-      semana: [semana],
-      mes: [descripcion],
+      semana: [descripcion],
+      numero: [semana],
+      anio: [anio],
       monto: [montoPorSemana],
+      gratificacion: [gratificacion],
       total: [total]
     }));
   }
+  //this.dataSourceSemanas.data = this.descuentos.controls;
+  this.dataSourceSemanas.data = this.descuentos.controls.map(control => ({
+    semana: control.get('semana')?.value,
+    monto: control.get('monto')?.value,
+    gratificacion: control.get('gratificacion')?.value,
+    total: control.get('total')?.value
+  }));
 
-  this.dataSourceSemanas.data = this.descuentos.controls;
-  //this.changeDetectorRef.detectChanges();
+}
+
+addGratificationRows(valorDescuentoJulio: number, valorDescuentoDiciembre: number) {
+  // Agregar gratificación de julio
+  const gratificacionJulio = this._formBuilder.group({
+    semana: ['Gratificación Julio'],
+    monto: [0],
+    gratificacion: [valorDescuentoJulio],
+    total: [valorDescuentoJulio]
+  });
+  this.descuentos.push(gratificacionJulio);
+
+  // Agregar gratificación de diciembre
+  const gratificacionDiciembre = this._formBuilder.group({
+    semana: ['Gratificación Diciembre'],
+    monto: [0],
+    gratificacion: [valorDescuentoDiciembre],
+    total: [valorDescuentoDiciembre]
+  });
+  this.descuentos.push(gratificacionDiciembre);
+
+  this.updateDataSourceSemanas();
+}
+
+updateDataSourceSemanas() {
+  this.dataSourceSemanas.data = this.descuentos.controls.map(control => ({
+    semana: control.get('semana')?.value,
+    monto: control.get('monto')?.value,
+    gratificacion: control.get('gratificacion')?.value,
+    total: control.get('total')?.value
+  }));
 }
 
 getNextWeek(date: Date): Date {
@@ -568,10 +787,17 @@ getNextWeek(date: Date): Date {
 getWeekNumber(date: Date): number {
   const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
   const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000;
-  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+
+  return Math.floor((pastDaysOfYear + firstDayOfYear.getDay()) / 7);
 }
 
-
+getMonthName(date: Date): string {
+  const monthNames = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+  return monthNames[date.getMonth()];
+}
 
 
 
@@ -609,6 +835,7 @@ getWeekNumber(date: Date): number {
             if(response1[0].validacion === false){
               this.openSnackBar('Aún no cuentas con los requisitos mínimos para solicitar una nuevo préstamo.', 'Cerrar', 'custom-snackbar');
             }else{
+              //Validacion puesto de usuario para proceder con descuentos mensual/semanal
               if(!this.puesto_validar.toLowerCase().includes('operario')){
                 this.secondFormGroup.get('nro_meses_descuento')?.valueChanges.subscribe(() => {
                   this.calculateDescuentos();
@@ -644,11 +871,12 @@ getWeekNumber(date: Date): number {
     if (this.secondFormGroup.valid) {
       this.stepper?.next();
     } else {
-      console.log('Formulario del Paso 2 no válido');
+      //console.log('Formulario del Paso 2 no válido');
     }
   }
 
   actualizarMontoCredito() {
+    const isOperario = this.puesto_validar && this.puesto_validar.toLowerCase().includes('operario');
     let montoOriginal = this.firstFormGroup.get('monto')?.value || 0;
     let montoRestante = montoOriginal;
 
@@ -667,7 +895,13 @@ getWeekNumber(date: Date): number {
     }
 
     this.secondFormGroup.get('creditAmount')?.setValue(montoRestante, { emitEvent: false });
-    this.calculateDescuentos();
+    //Se agregan las funciones para recalcular la cuota x mes | cuota x semana
+    //Se quitó el calculo para obrero porque se agregará el campo al final de las cuotas
+    if(isOperario){
+      this.calculateCuotasObrero();
+    }else{
+      this.calculateDescuentos();
+    }
   }
 
   openDialogTerminosCondiciones() {
